@@ -1,0 +1,82 @@
+.signup-root {
+  display: flex;
+  height: 100vh;
+}
+
+.signup-image {
+  background-image: url('https://source.unsplash.com/random');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  width: 50%;
+}
+
+.signup-form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  padding: 0 2rem;
+}
+
+.signup-paper {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.signup-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.signup-subtitle {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.signup-form {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.signup-input {
+  margin-bottom: 1rem;
+}
+
+.signup-button {
+  margin-top: 1.5rem;
+  background-color: #6c63ff;
+  color: white;
+}
+
+.signup-button:hover {
+  background-color: #594fd1;
+}
+
+.signup-step-indicator {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.signup-step-indicator > div {
+  width: 10px;
+  height: 10px;
+  margin: 0 5px;
+  border-radius: 50%;
+  background-color: #ccc;
+}
+
+.signup-step-indicator > .active {
+  background-color: #6c63ff;
+}
