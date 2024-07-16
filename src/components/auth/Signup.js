@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { signup } from './authSlice';
-import { createStore } from '../store/storeSlice';
+import { signup } from '../../slices/authSlice';
+import { createStore } from '../../slices/storeSlice';
 import { Container, TextField, Button, Typography, Grid, Paper } from '@mui/material';
 import { Redirect } from 'react-router-dom';
 import './style/Signup.css'; // Import the CSS file

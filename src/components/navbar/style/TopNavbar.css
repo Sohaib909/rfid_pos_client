@@ -1,0 +1,70 @@
+.top-navbar {
+  width: 85%;
+  height: 60px;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+}
+
+.top-navbar-right {
+  display: flex;
+}
+
+.top-navbar-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.top-navbar-left h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.top-navbar-left p {
+  margin: 0;
+  font-size: 14px;
+  color: gray;
+}
+
+.search-bar {
+  margin-right: 20px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.notification-button {
+  margin-right: 20px;
+  background: none;
+  border: none;
+  font-size: 20px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.profile-picture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.logout-button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+}

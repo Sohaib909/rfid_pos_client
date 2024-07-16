@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { setStores } from '../store/storeSlice';
+import { setStores } from './storeSlice';
 
 export const signup = createAsyncThunk('auth/signup', async (data) => {
   const response = await axios.post('/auth/signup', data);

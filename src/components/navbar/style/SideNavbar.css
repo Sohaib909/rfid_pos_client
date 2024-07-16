@@ -1,0 +1,40 @@
+.side-navbar {
+  width: 15%;
+  height: 100vh;
+  background-color: #fff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.logo h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.menu a {
+  text-decoration: none;
+  padding: 10px 20px;
+  color: black;
+  font-size: 16px;
+}
+
+.menu a.active {
+  background-color: #6c63ff;
+  color: white;
+}
+
+.menu a:hover {
+  background-color: #ececec;
+}
