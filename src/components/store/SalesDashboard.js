@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSales } from './storeSlice';
+import { fetchSales } from '../../slices/storeSlice';
 import { Container, Typography, Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Button } from '@mui/material';
-import { AddCircle, RemoveCircle } from '@mui/icons-material';
+// import { AddCircle, RemoveCircle } from '@mui/icons-material';
 import './style/SalesDashboard.css';
 
 const SalesDashboard = () => {
   const dispatch = useDispatch();
   const { sales, status, error } = useSelector((state) => state.store);
   const { user } = useSelector((state) => state.auth);
-
+  const dummySales = [];
   return (
     <Container className="dashboard-container">
+      <h1>Sales Dashboard</h1>
       <Box className="dashboard-header">
         <Typography variant="h4">Hello {user.firstName} {user.lastName} 👋</Typography>
         <Typography variant="subtitle1">Good Morning</Typography>
@@ -55,16 +56,14 @@ const SalesDashboard = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {sales.map((sale, index) => (
+            {dummySales.map((sale, index) => (
               <TableRow key={sale.id}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{sale.productName}</TableCell>
                 <TableCell>{sale.sku}</TableCell>
                 <TableCell>{sale.productFamily}</TableCell>
                 <TableCell>
-                  <IconButton><RemoveCircle /></IconButton>
                   {sale.quantity}
-                  <IconButton><AddCircle /></IconButton>
                 </TableCell>
                 <TableCell>{sale.price}</TableCell>
                 <TableCell>

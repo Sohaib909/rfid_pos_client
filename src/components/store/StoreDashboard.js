@@ -9,7 +9,7 @@ const StoreDashboard = () => {
   return (
     <Container>
       <Typography variant="h4">Stores</Typography>
-      <h1>{stores}</h1>
+      <h1>Store Dashboard</h1>
       {stores.map((store) => (
         <Typography key={store.id} variant="body1">
           {store.name}
