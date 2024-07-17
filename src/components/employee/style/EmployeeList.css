@@ -1,0 +1,53 @@
+.employee-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.search-bar {
+  width: 250px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+}
+
+.add-employee-button {
+  margin-right: 8px;
+  background-color: #6c63ff;
+  color: white;
+}
+
+.filter-button {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: #333;
+}
+
+.filter-button span {
+  margin-left: 5px;
+}
+
+.employee-name-cell {
+  display: flex;
+  align-items: center;
+}
+
+.employee-name-cell span {
+  margin-left: 8px;
+}
+
+.status-button {
+  color: #6c63ff;
+  border-color: #6c63ff;
+}
+
+.status-button:hover {
+  background-color: #6c63ff;
+  color: #fff;
+}
