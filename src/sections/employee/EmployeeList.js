@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { fetchEmployees } from '../../slices/employeeSlice';
 import {
   Container,
@@ -25,6 +24,7 @@ import AddIcon from '@mui/icons-material/Add';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SearchIcon from '@mui/icons-material/Search';
 import './style/EmployeeList.css';
+import { useRouter } from '../../routes/hooks';
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -32,7 +32,7 @@ const EmployeeList = () => {
   const status = useSelector((state) => state.employee.status);
   const error = useSelector((state) => state.employee.error);
   const [searchTerm, setSearchTerm] = useState('');
-  const history = useHistory();
+  const history = useRouter();
 
   useEffect(() => {
     dispatch(fetchEmployees());

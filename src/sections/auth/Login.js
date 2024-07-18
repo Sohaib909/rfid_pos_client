@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../slices/authSlice';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -20,7 +20,7 @@ const Login = () => {
   };
 
   if (user) {
-    return <Redirect to="/" />;
+    return <Navigate to="/" />;
   }
 
   return (

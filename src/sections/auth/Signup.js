@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { signup } from '../../slices/authSlice';
 import { createStore } from '../../slices/storeSlice';
 import { Container, TextField, Button, Typography, Grid, Paper } from '@mui/material';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import './style/Signup.css'; // Import the CSS file
 
 const Signup = () => {
@@ -35,7 +35,7 @@ const Signup = () => {
   };
 
   if (user) {
-    return <Redirect to="/" />;
+    return <Navigate to="/" />;
   }
 
   return (
