@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchEmployees } from '../../slices/employeeSlice';
+import { useState } from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -12,40 +10,21 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-// import './style/EmployeeList.css';
+import { users } from 'src/_mock/user';
 
-import Iconify from '../../components/iconify';
-import Scrollbar from '../../components/scrollbar';
-import { useRouter } from '../../routes/hooks';
-import TableNoData from '../../components/table/table-no-data';
-import MTableRow from '../../components/table/table-row';
-import MTableHead from '../../components/table/table-head';
-import TableEmptyRows from '../../components/table/table-empty-rows';
-import MTableToolbar from '../../components/table/table-toolbar';
-import { emptyRows, applyFilter, getComparator } from '../../components/table/utils';
+import Iconify from 'src/components/iconify';
+import Scrollbar from 'src/components/scrollbar';
 
+import TableNoData from '../table-no-data';
+import UserTableRow from '../user-table-row';
+import UserTableHead from '../user-table-head';
+import TableEmptyRows from '../table-empty-rows';
+import UserTableToolbar from '../user-table-toolbar';
+import { emptyRows, applyFilter, getComparator } from '../utils';
 
+// ----------------------------------------------------------------------
 
-const EmployeeList = () => {
-  const dispatch = useDispatch();
-  const employees = useSelector((state) => state.employee.employees);
-  const status = useSelector((state) => state.employee.status);
-  const error = useSelector((state) => state.employee.error);
-  const [searchTerm, setSearchTerm] = useState('');
-  const history = useRouter();
-
-  useEffect(() => {
-    dispatch(fetchEmployees());
-  }, [dispatch]);
-
-  const filteredEmployees = employees.filter(employee =>
-    `${employee.firstName} ${employee.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleNewEmployee = () => {
-    history.push('/employees/new');
-  };
-
+export default function UserPage() {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -68,7 +47,7 @@ const EmployeeList = () => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = filteredEmployees.map((n) => n.name);
+      const newSelecteds = users.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -108,26 +87,25 @@ const EmployeeList = () => {
   };
 
   const dataFiltered = applyFilter({
-    inputData: filteredEmployees,
+    inputData: users,
     comparator: getComparator(order, orderBy),
     filterName,
   });
 
   const notFound = !dataFiltered.length && !!filterName;
 
-
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Employees</Typography>
+        <Typography variant="h4">Users</Typography>
 
-        <Button variant="contained" color="inherit" onClick={handleNewEmployee} startIcon={<Iconify icon="eva:plus-fill" />}>
-          New Employee
+        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
+          New User
         </Button>
       </Stack>
 
       <Card>
-        <MTableToolbar
+        <UserTableToolbar
           numSelected={selected.length}
           filterName={filterName}
           onFilterName={handleFilterByName}
@@ -136,44 +114,43 @@ const EmployeeList = () => {
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
-              <MTableHead
+              <UserTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={filteredEmployees.length}
+                rowCount={users.length}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
                   { id: 'name', label: 'Name' },
-                  { id: 'employeeId', label: 'Employee ID' },
-                  { id: 'department', label: 'Department' },
-                  { id: 'status', label: 'Status', align: 'center' },
+                  { id: 'company', label: 'Company' },
+                  { id: 'role', label: 'Role' },
+                  { id: 'isVerified', label: 'Verified', align: 'center' },
+                  { id: 'status', label: 'Status' },
                   { id: '' },
                 ]}
               />
               <TableBody>
-              {
-                dataFiltered
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
-                  <MTableRow
-                    rowLabel={[
-                      { label: 'Name', value: `${row.firstName} ${row.lastName}`},
-                      { label: 'Role', value: row.role},
-                      { label: 'Status', value: row.employeeType},
-                      { label: 'Department', align: 'center', value: row.designation},
-                      { key: '', value: ''},
-                    ]}
-                    key={row.id}
-                    selected={selected.indexOf(row.name) !== -1}
-                    handleClick= {(event) => handleClick(event, row.name)}
-                  />
-                ))
-              }
-              <TableEmptyRows
-                height={77}
-                emptyRows={emptyRows(page, rowsPerPage, filteredEmployees.length)}
-              />
+                {dataFiltered
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => (
+                    <UserTableRow
+                      key={row.id}
+                      name={row.name}
+                      role={row.role}
+                      status={row.status}
+                      company={row.company}
+                      avatarUrl={row.avatarUrl}
+                      isVerified={row.isVerified}
+                      selected={selected.indexOf(row.name) !== -1}
+                      handleClick={(event) => handleClick(event, row.name)}
+                    />
+                  ))}
+
+                <TableEmptyRows
+                  height={77}
+                  emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                />
 
                 {notFound && <TableNoData query={filterName} />}
               </TableBody>
@@ -184,7 +161,7 @@ const EmployeeList = () => {
         <TablePagination
           page={page}
           component="div"
-          count={filteredEmployees.length}
+          count={users.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}
@@ -194,5 +171,3 @@ const EmployeeList = () => {
     </Container>
   );
 }
-
-export default EmployeeList;

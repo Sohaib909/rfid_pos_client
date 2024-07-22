@@ -1,5 +1,4 @@
 import React from 'react';
-// import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider, useSelector } from 'react-redux';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -21,25 +20,5 @@ function App() {
     </Provider>
   );
 }
-
-// function AppContent() {
-//   const { user } = useSelector((state) => state.auth);
-
-//   return (
-//     <div style={{ display: 'flex' }}>
-//       {user && <SideNavbar />}
-//       <div style={{ flex: 1, marginLeft: user ? '15%' : 0 }}>
-//       {user && <TopNavbar />}
-//       <Switch>
-//         <Route exact path="/login" component={Login} />
-//         <Route exact path="/signup" component={Signup} />
-//         <PrivateRoute path="/employees/new" component={AddEmployee} />
-//         <PrivateRoute path="/employees" component={EmployeeList} />
-//         <PrivateRoute path="/" component={Dashboard} />
-//       </Switch>
-//       </div>
-//     </div>
-//   );
-// }
 
 export default App;
