@@ -8,6 +8,7 @@ export const Dashboard = lazy(()=> import('../sections/store/index.js'));
 export const PrivateRoute = lazy(()=> import('../sections/PrivateRoutes'));
 export const AddEmployee = lazy(()=> import('../sections/employee/AddEmployee'));
 export const EmployeeList = lazy(()=> import('../sections/employee/EmployeeList'));
+export const AddProduct = lazy(()=> import('../sections/product/AddProduct'));
 export const Page404 = lazy(() => import('../pages/page-not-found'));
 
 // ----------------------------------------------------------------------
@@ -25,6 +26,7 @@ export default function Router() {
       children: [
         { element: <Dashboard />, index: true },
         { path: 'employees', element: <EmployeeList /> },
+        { path: 'products/new', element: <AddProduct /> },
         { path: 'employees/new', element: <AddEmployee /> },
       ],
     },

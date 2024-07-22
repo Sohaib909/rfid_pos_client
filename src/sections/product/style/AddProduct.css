@@ -1,0 +1,41 @@
+.product-form-container {
+  margin-top: 20px;
+}
+
+.product-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.product-form-header h4 {
+  margin: 0;
+}
+
+.product-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-form .MuiGrid-root {
+  margin-bottom: 15px;
+}
+
+.product-form .MuiButton-root {
+  margin-top: 20px;
+  background-color: #6c63ff;
+  color: white;
+}
+
+.product-form .MuiButton-root:hover {
+  background-color: #5a54d8;
+}
+
+.product-form .MuiTextField-root {
+  width: 100%;
+}
+
+.product-form .MuiFormControl-root {
+  width: 100%;
+}
