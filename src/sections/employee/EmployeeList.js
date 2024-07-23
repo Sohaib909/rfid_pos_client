@@ -110,7 +110,8 @@ const EmployeeList = () => {
   const dataFiltered = applyFilter({
     inputData: filteredEmployees,
     comparator: getComparator(order, orderBy),
-    filterName,
+    filterFields: ["name"],
+    filterValue: filterName
   });
 
   const notFound = !dataFiltered.length && !!filterName;

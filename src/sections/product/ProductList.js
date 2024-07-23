@@ -110,7 +110,8 @@ const ProductList = () => {
   const dataFiltered = applyFilter({
     inputData: filteredProducts,
     comparator: getComparator(order, orderBy),
-    filterName,
+    filterFields: ["name", "sku"],
+    filterValue: filterName
   });
 
   const notFound = !dataFiltered.length && !!filterName;
