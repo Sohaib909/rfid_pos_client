@@ -11,7 +11,7 @@ import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function MTableToolbar({ numSelected, filterName, onFilterName }) {
+export default function MTableToolbar({ numSelected, filterName, onFilterName, searchPlaceholder }) {
   return (
     <Toolbar
       sx={{
@@ -33,7 +33,7 @@ export default function MTableToolbar({ numSelected, filterName, onFilterName })
         <OutlinedInput
           value={filterName}
           onChange={onFilterName}
-          placeholder="Search user..."
+          placeholder={searchPlaceholder}
           startAdornment={
             <InputAdornment position="start">
               <Iconify
@@ -66,4 +66,5 @@ MTableToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
+  searchPlaceholder: PropTypes.string,
 };

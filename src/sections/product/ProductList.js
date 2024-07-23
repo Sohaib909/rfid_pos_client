@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchEmployees } from '../../slices/employeeSlice';
+import { fetchProducts } from '../../slices/productSlice';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-// import './style/EmployeeList.css';
+// import './style/ProductList.css';
 
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
@@ -26,24 +26,24 @@ import { emptyRows, applyFilter, getComparator } from '../../components/table/ut
 
 
 
-const EmployeeList = () => {
+const ProductList = () => {
   const dispatch = useDispatch();
-  const employees = useSelector((state) => state.employee.employees);
-  const status = useSelector((state) => state.employee.status);
-  const error = useSelector((state) => state.employee.error);
+  const products = useSelector((state) => state.product.products);
+  const status = useSelector((state) => state.product.status);
+  const error = useSelector((state) => state.product.error);
   const [searchTerm, setSearchTerm] = useState('');
   const history = useRouter();
 
   useEffect(() => {
-    dispatch(fetchEmployees());
+    dispatch(fetchProducts());
   }, [dispatch]);
 
-  const filteredEmployees = employees.filter(employee =>
-    `${employee.firstName} ${employee.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProducts = products.filter(prod =>
+    `${prod.sku}`.includes(searchTerm) || `${prod.name}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleNewEmployee = () => {
-    history.push('/employees/new');
+  const handleNewProduct = () => {
+    history.push('/products/new');
   };
 
   const [page, setPage] = useState(0);
@@ -68,7 +68,7 @@ const EmployeeList = () => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = filteredEmployees.map((n) => n.name);
+      const newSelecteds = filteredProducts.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -108,7 +108,7 @@ const EmployeeList = () => {
   };
 
   const dataFiltered = applyFilter({
-    inputData: filteredEmployees,
+    inputData: filteredProducts,
     comparator: getComparator(order, orderBy),
     filterName,
   });
@@ -119,10 +119,10 @@ const EmployeeList = () => {
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Employees</Typography>
+        <Typography variant="h4">Products</Typography>
 
-        <Button variant="contained" color="inherit" onClick={handleNewEmployee} startIcon={<Iconify icon="eva:plus-fill" />}>
-          New Employee
+        <Button variant="contained" color="inherit" onClick={handleNewProduct} startIcon={<Iconify icon="eva:plus-fill" />}>
+          New Product
         </Button>
       </Stack>
 
@@ -131,7 +131,7 @@ const EmployeeList = () => {
           numSelected={selected.length}
           filterName={filterName}
           onFilterName={handleFilterByName}
-          searchPlaceholder="Search by name"
+          searchPlaceholder="Search by name or sku"
         />
 
         <Scrollbar>
@@ -140,15 +140,15 @@ const EmployeeList = () => {
               <MTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={filteredEmployees.length}
+                rowCount={filteredProducts.length}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
                   { id: 'name', label: 'Name' },
-                  { id: 'employeeId', label: 'Employee ID' },
-                  { id: 'department', label: 'Department' },
-                  { id: 'status', label: 'Status', align: 'center' },
+                  { id: 'sku', label: 'SKU' },
+                  { id: 'price', label: 'Price' },
+                  { id: 'quantity', label: 'Quantity' },
                   { id: '' },
                 ]}
               />
@@ -159,10 +159,10 @@ const EmployeeList = () => {
                 .map((row) => (
                   <MTableRow
                     rowLabel={[
-                      { label: 'Name', value: `${row.firstName} ${row.lastName}`},
-                      { label: 'Role', value: row.role},
-                      { label: 'Status', value: row.employeeType},
-                      { label: 'Department', align: 'center', value: row.designation},
+                      { label: 'Name', value: `${row.name}`},
+                      { label: 'Sku', value: row.sku},
+                      { label: 'Price', value: row.price},
+                      { label: 'Quantity', value: row.quantity},
                       { key: '', value: ''},
                     ]}
                     key={row.id}
@@ -173,7 +173,7 @@ const EmployeeList = () => {
               }
               <TableEmptyRows
                 height={77}
-                emptyRows={emptyRows(page, rowsPerPage, filteredEmployees.length)}
+                emptyRows={emptyRows(page, rowsPerPage, filteredProducts.length)}
               />
 
                 {notFound && <TableNoData query={filterName} />}
@@ -185,7 +185,7 @@ const EmployeeList = () => {
         <TablePagination
           page={page}
           component="div"
-          count={filteredEmployees.length}
+          count={filteredProducts.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}
@@ -196,4 +196,4 @@ const EmployeeList = () => {
   );
 }
 
-export default EmployeeList;
+export default ProductList;
