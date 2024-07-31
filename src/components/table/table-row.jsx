@@ -37,10 +37,9 @@ export default function MTableRow({
       <TableCell padding="checkbox">
         <Checkbox disableRipple checked={selected} onChange={handleClick} />
       </TableCell>
-      {rowLabel.map((rowCell) => (
-        <>
-        {rowCell.profileSection ? (
-          <TableCell component="th" scope="row" padding="none">
+      {rowLabel.map((rowCell, index) => (
+        rowCell.profileSection ? (
+          <TableCell  key={index}component="th" scope="row" padding="none">
             <Stack direction="row" alignItems="center" spacing={2}>
               <Avatar alt="" src={rowCell.avatarUrl} />
               <Typography variant="subtitle2" noWrap>
@@ -49,9 +48,8 @@ export default function MTableRow({
             </Stack>
           </TableCell>
         ) : (
-          <TableCell>{rowCell.value}</TableCell>
-        )}
-        </>
+          <TableCell key={index}>{rowCell.value}</TableCell>
+        )
       ))}
       <TableCell align="right">
         <IconButton onClick={handleOpenMenu}>

@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
+import RequireAuth from '../sections/auth/RequireAuth';
 
 import DashboardLayout from '../layouts/dashboard';
 export const Login = lazy(()=> import('../sections/auth/Login'));
@@ -25,11 +26,11 @@ export default function Router() {
         </DashboardLayout>
       ),
       children: [
-        { element: <Dashboard />, index: true },
-        { path: 'employees', element: <EmployeeList /> },
-        { path: 'products', element: <ProductList /> },
-        { path: 'products/new', element: <AddProduct /> },
-        { path: 'employees/new', element: <AddEmployee /> },
+        { element: <RequireAuth><Dashboard /></RequireAuth>, index: true },
+        { path: 'employees', element: <RequireAuth><EmployeeList /></RequireAuth> },
+        { path: 'products', element: <RequireAuth><ProductList /></RequireAuth> },
+        { path: 'products/new', element: <RequireAuth><AddProduct /></RequireAuth> },
+        { path: 'employees/new', element: <RequireAuth><AddEmployee /></RequireAuth> },
       ],
     },
     {

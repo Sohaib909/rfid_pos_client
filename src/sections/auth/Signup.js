@@ -26,11 +26,7 @@ const Signup = () => {
     if (step === 1) {
       handleNext(e);
     } else {
-      dispatch(signup({ firstName, lastName, email, password })).then((result) => {
-        if (result.meta.requestStatus === 'fulfilled') {
-          dispatch(createStore({ name: storeName }));
-        }
-      });
+      dispatch(signup({ firstName, lastName, email, password, storeName }))
     }
   };
 
