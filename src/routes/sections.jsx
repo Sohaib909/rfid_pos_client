@@ -11,6 +11,7 @@ export const AddEmployee = lazy(()=> import('../sections/employee/AddEmployee'))
 export const EmployeeList = lazy(()=> import('../sections/employee/EmployeeList'));
 export const AddProduct = lazy(()=> import('../sections/product/AddProduct'));
 export const ProductList = lazy(()=> import('../sections/product/ProductList'));
+export const GenerateReport = lazy(()=> import('../sections/reporting/GenerateReport'));
 export const Page404 = lazy(() => import('../pages/page-not-found'));
 
 // ----------------------------------------------------------------------
@@ -31,6 +32,7 @@ export default function Router() {
         { path: 'products', element: <RequireAuth><ProductList /></RequireAuth> },
         { path: 'products/new', element: <RequireAuth><AddProduct /></RequireAuth> },
         { path: 'employees/new', element: <RequireAuth><AddEmployee /></RequireAuth> },
+        { path: 'reporting', element: <RequireAuth><GenerateReport /></RequireAuth> },
       ],
     },
     {
