@@ -1,33 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Typography, Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { Container, Typography, Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Button, TextField, Autocomplete, Divider } from '@mui/material';
 import { AddCircle, RemoveCircle } from '@mui/icons-material';
 import Iconify from '../../components/iconify';
 import './style/SalesDashboard.css';
 import { fetchProductsDataForSales, createSale } from '../../slices/saleSlice';
+import debounce from 'lodash.debounce';
+import axios from 'axios';
 
 const SalesDashboard = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const products = useSelector((state) => state.sale.productsData);
+  // const products = useSelector((state) => state.sale.productsData);
   const status = useSelector((state) => state.sale.status);
   const error = useSelector((state) => state.sale.error);
   const [formData, setFormData] = useState({
     customerName: '',
     customerContact: '',
-    totalAmount: '',
+    totalAmount: 0,
     items: []
   });
-  const [addItemModal, setAddItemModal] = useState(false);
-  const [proceedSaleModal, setProceedSaleModal] = useState(false);
   const [sku, setSku] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [errorText, setErrorText] = useState('');
   const [taxAmount, setTaxAmount] = useState(0);
-
-  useEffect(() => {
-    dispatch(fetchProductsDataForSales());
-  }, [dispatch]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     const subTotal = subTotalAmount();
@@ -40,25 +38,35 @@ const SalesDashboard = () => {
     });
   }, [formData.items]);
 
-  const openAddItemModal = () => {
-    setAddItemModal(true);
-  };
 
-  const closeAddItemModal = () => {
-    setAddItemModal(false);
+  const resetManualItemAddData = () => {
     setSku('');
     setQuantity(1);
     setErrorText('');
+    setSelectedProduct(null);
+    setFilteredProducts([])
   };
 
-  const addItemToCart = () => {
-    const product = products.find((p) => p.sku === sku);
-    if (!sku) {
-      setErrorText('Please enter valid product SKU number.');
-      return;
+
+  const handleProductsSearch = debounce(async (e) => {
+    const searchText = e.target.value;
+    setSku(searchText);
+    if (searchText.length > 0) {
+      try {
+        const response = await axios.get(`/sale/products_data`, { params: { sku: searchText } })
+        console.log(response.data)
+        setFilteredProducts(response.data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    } else {
+      setFilteredProducts([]);
     }
-    if (!product) {
-      setErrorText('Product with given SKU not found.');
+  }, 300);
+
+  const addItemToCart = () => {
+    if (!selectedProduct) {
+      setErrorText('Please select a product.');
       return;
     }
 
@@ -67,20 +75,20 @@ const SalesDashboard = () => {
       return;
     }
 
-    const existingItem = formData.items.find((item) => item.sku === sku);
+    const existingItem = formData.items.find((item) => item.sku === selectedProduct.sku);
     if (existingItem) {
       setFormData({
         ...formData,
-        items: formData.items.map((item) => item.sku === sku ? { ...item, quantity: item.quantity + quantity } : item)
+        items: formData.items.map((item) => item.sku === selectedProduct.sku ? { ...item, quantity: item.quantity + quantity } : item)
       });
     } else {
       setFormData({
         ...formData,
-        items: [...formData.items, { ...product, quantity }]
+        items: [...formData.items, { ...selectedProduct, quantity }]
       });
     }
-
-    closeAddItemModal();
+    console.log(formData)
+    resetManualItemAddData();
     console.log('Items after adding:', formData.items);
   };
 
@@ -98,26 +106,22 @@ const SalesDashboard = () => {
     return formData.items.reduce((total, item) => total + item.quantity * item.price, 0);
   };
 
-  const openProceedSaleModal = () => {
-    setProceedSaleModal(true);
-    setFormData({
-      ...formData,
-      customerName: '',
-      customerContact: '',
-    });
-  };
-
-  const closeProceedSaleModal = () => {
-    setProceedSaleModal(false);
-  }
-
   const saveSale = () => {
     if(!formData.items.length) {
       setErrorText('Please select products to proceed.');
       return;
     }
 
-    dispatch(createSale(formData));
+    dispatch(createSale(formData)).then((result) => {
+      if (result.meta.requestStatus === 'fulfilled') {
+        setFormData({
+          customerName: '',
+          customerContact: '',
+          totalAmount: 0,
+          items: []
+        })
+      }
+    });;
   }
 
   const setCustomerInformation = (e) => {
@@ -129,104 +133,121 @@ const SalesDashboard = () => {
     console.log(formData)
   };
 
+  const removeItemFromCart = (sku) => {
+    console.log("remove item")
+    const filteredItems = formData.items.filter(item => item.sku != sku);
+    setFormData({
+      ...formData,
+      items: filteredItems
+    });
+
+  };
+
   return (
     <Container className="dashboard-container">
       <Box className="dashboard-header">
         <Typography variant="h4">Hello {user.firstName} {user.lastName} 👋</Typography>
         <Typography variant="subtitle1">Good Morning</Typography>
       </Box>
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={6} md={4}>
-          <Paper className="dashboard-card">
-            <Typography variant="h6">Total Sale Amount</Typography>
-            <Typography variant="h3">560</Typography>
-            <Typography variant="body2">Update: July 16, 2023</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Paper className="dashboard-card">
-            <Typography variant="h6">Total Product</Typography>
-            <Typography variant="h3">1050</Typography>
-            <Typography variant="body2">Update: July 14, 2023</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Paper className="dashboard-card">
-            <Typography variant="h6">Subtotal</Typography>
-            <Typography variant="h3">${subTotalAmount()}</Typography>
-            <Typography variant="body2">Discounts: -$8.00</Typography>
-            <Typography variant="body2">Tax: ${taxAmount}</Typography>
-            <Typography variant="h4" className="total-amount">Total: ${formData.totalAmount}</Typography>
-            {formData.items && formData.items.length > 0 ? (
-              <Button variant="contained" color="inherit" onClick={openProceedSaleModal}>
-                Proceed
-              </Button>
-            ) : null}
+      <Grid container spacing={1}>
+        <Grid item xs={12} md={12}>
+          <Paper
+            className="dashboard-card"
+            style={{
+              backgroundColor: '#7B61FF',
+              color: 'white',
+              padding: '16px',
+              borderRadius: '8px'
+            }}
+          >
+            <Grid container spacing={2}>
+              {/* Left side with amounts */}
+              <Grid item xs={12} md={6} display="flex">
+                <Grid container direction="column" spacing={1} justifyContent="center">
+                  <Grid item>
+                    <Grid container justifyContent="space-between">
+                      <Typography variant="body1">Subtotal</Typography>
+                      <Typography variant="body1">${subTotalAmount().toFixed(2)}</Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid item>
+                    <Grid container justifyContent="space-between">
+                      <Typography variant="body1">Discounts</Typography>
+                      <Typography variant="body1">- $8.00</Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid item>
+                    <Grid container justifyContent="space-between">
+                      <Typography variant="body1">Tax</Typography>
+                      <Typography variant="body1">${taxAmount.toFixed(2)}</Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid item>
+                    <hr style={{ borderColor: 'white', margin: '8px 0' }} />
+                  </Grid>
+                  <Grid item>
+                    <Grid container justifyContent="space-between">
+                      <Typography variant="h6">Total</Typography>
+                      <Typography variant="h6">${formData.totalAmount.toFixed(2)}</Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item style={{ padding: "0 0 0 1.5rem" }}>
+                  <Divider orientation="vertical" style={{ backgroundColor: 'white', height: '100%', width: '1px' }} />
+                </Grid>
+              </Grid>
+              
+              {/* Divider */}
+
+              {/* Right side with text fields */}
+              <Grid item xs={12} md={6} style={{ padding: "16px 0 0 1.5rem" }}>
+                <TextField
+                  name="customerName"
+                  label="Customer Name (optional)"
+                  value={formData.customerName}
+                  onChange={setCustomerInformation}
+                  fullWidth
+                  margin="normal"
+                  style={{ backgroundColor: 'white', borderRadius: '4px', marginTop: '0' }}
+                />
+                <TextField
+                  name="customerContact"
+                  label="Customer Contact (optional)"
+                  value={formData.customerContact}
+                  onChange={setCustomerInformation}
+                  fullWidth
+                  margin="normal"
+                  style={{ backgroundColor: 'white', borderRadius: '4px', marginTop: '0' }}
+                />
+                <Button onClick={saveSale} color="primary" style={{ backgroundColor: 'white', borderRadius: '4px', width: '100%' }}>
+                  Checkout
+                </Button>
+              </Grid>
+            </Grid>
           </Paper>
         </Grid>
       </Grid>
-      <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={openAddItemModal}>
-        Add Item
-      </Button>
-      <Dialog open={addItemModal} onClose={closeAddItemModal}>
-        <DialogTitle>Add Item</DialogTitle>
-        <DialogContent>
+      <Autocomplete
+        options={filteredProducts}
+        getOptionLabel={(option) => `${option.sku}: ${option.name}`}
+        renderInput={(params) => (
           <TextField
-            label="SKU"
+            {...params}
+            label="Add Product by SKU"
             value={sku}
-            onChange={(e) => setSku(e.target.value)}
+            onChange={handleProductsSearch}
             fullWidth
             margin="normal"
           />
-          <TextField
-            label="Quantity"
-            type="number"
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-            fullWidth
-            margin="normal"
-          />
-          {errorText && <Typography color="error">{errorText}</Typography>}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeAddItemModal} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={addItemToCart} color="primary">
-            Add
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog open={proceedSaleModal} onClose={closeProceedSaleModal}>
-        <DialogTitle>Proceed</DialogTitle>
-        <DialogContent>
-          <TextField
-            name="customerName"
-            label="Customer Name (optional)"
-            value={formData.customerName}
-            onChange={setCustomerInformation}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            name="customerContact"
-            label="Customer Contact (optional)"
-            value={formData.customerContact}
-            onChange={setCustomerInformation}
-            fullWidth
-            margin="normal"
-          />
-          {errorText && <Typography color="error">{errorText}</Typography>}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeProceedSaleModal} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={saveSale} color="primary">
-            Proceed
-          </Button>
-        </DialogActions>
-      </Dialog>
+        )}
+        onChange={(event, newValue) => {
+          setSelectedProduct(newValue);
+        }}
+        value={selectedProduct}
+      />
+      <Button variant="contained" color="primary" startIcon={<Iconify icon="eva:plus-fill" />} onClick={addItemToCart}>
+        Add
+      </Button>
       <TableContainer component={Paper} className="sales-table-container">
         <Table>
           <TableHead>
@@ -252,7 +273,13 @@ const SalesDashboard = () => {
                 </TableCell>
                 <TableCell>{item.quantity * item.price}</TableCell>
                 <TableCell>
-                  <Button variant="contained" color="secondary">Delete</Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => removeItemFromCart(item.sku)}
+                    sx={{ backgroundColor: 'red', color: 'white', '&:hover': { backgroundColor: 'darkred' } }}
+                  >
+                    Remove
+                  </Button>
                 </TableCell>
               </TableRow>
             )) : null}
