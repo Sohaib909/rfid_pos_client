@@ -14,7 +14,6 @@ export const createSale = createAsyncThunk('sale/createSale', async (saleData) =
 const saleSlice = createSlice({
   name: 'sale',
   initialState: {
-    productsData: [],
     status: 'idle',
     error: null,
   },
@@ -26,11 +25,9 @@ const saleSlice = createSlice({
       })
       .addCase(fetchProductsDataForSales.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.productsData = action.payload;
       })
       .addCase(fetchProductsDataForSales.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
       })
       .addCase(createSale.pending, (state) => {
         state.status = 'loading';
