@@ -122,7 +122,7 @@ const EmployeeList = () => {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Employees</Typography>
 
-        <Button variant="contained" color="inherit" onClick={handleNewEmployee} startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button variant="contained" color="primary" onClick={handleNewEmployee} startIcon={<Iconify icon="eva:plus-fill" />}>
           New Employee
         </Button>
       </Stack>

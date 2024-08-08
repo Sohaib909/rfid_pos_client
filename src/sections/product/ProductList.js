@@ -122,7 +122,7 @@ const ProductList = () => {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Products</Typography>
 
-        <Button variant="contained" color="inherit" onClick={handleNewProduct} startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button variant="contained" color="primary" onClick={handleNewProduct} startIcon={<Iconify icon="eva:plus-fill" />}>
           New Product
         </Button>
       </Stack>
@@ -164,7 +164,6 @@ const ProductList = () => {
                       { label: 'Sku', value: row.sku},
                       { label: 'Price', value: row.price},
                       { label: 'Quantity', value: row.quantity},
-                      { key: '', value: ''},
                     ]}
                     key={row.id}
                     selected={selected.indexOf(row.name) !== -1}

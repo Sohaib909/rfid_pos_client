@@ -19,21 +19,28 @@ export default function MTableHead({
   numSelected,
   onRequestSort,
   onSelectAllClick,
+  isSalesDashboard = false
 }) {
   const onSort = (property) => (event) => {
+    if (isSalesDashboard) {
+      return;
+    }
     onRequestSort(event, property);
   };
 
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-          />
-        </TableCell>
+        {
+          !isSalesDashboard ? (
+          <TableCell padding="checkbox">
+            <Checkbox
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
+              onChange={onSelectAllClick}
+            />
+          </TableCell>
+        ) : null}
 
         {headLabel.map((headCell) => (
           <TableCell
@@ -70,4 +77,5 @@ MTableHead.propTypes = {
   numSelected: PropTypes.number,
   onRequestSort: PropTypes.func,
   onSelectAllClick: PropTypes.func,
+  isSalesDashboard: PropTypes.bool,
 };
