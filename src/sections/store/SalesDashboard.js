@@ -139,10 +139,6 @@ const SalesDashboard = () => {
 
   return (
     <Container className="dashboard-container">
-      <Box className="dashboard-header">
-        <Typography variant="h4">Hello {user.firstName} {user.lastName} 👋</Typography>
-        <Typography variant="subtitle1">Good Morning</Typography>
-      </Box>
       <Grid container spacing={1}>
         <Grid item xs={12} md={12}>
           <Paper

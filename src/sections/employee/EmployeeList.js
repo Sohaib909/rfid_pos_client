@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchEmployees } from '../../slices/employeeSlice';
+import { fetchEmployees, deleteEmployee } from '../../slices/employeeSlice';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -116,6 +116,11 @@ const EmployeeList = () => {
 
   const notFound = !dataFiltered.length && !!filterName;
 
+  const removeEmployee = (id) => {
+    console.log(id);
+    dispatch(deleteEmployee(id));
+
+  }
 
   return (
     <Container>
@@ -161,7 +166,7 @@ const EmployeeList = () => {
                   <MTableRow
                     rowLabel={[
                       { label: 'Name', value: `${row.firstName} ${row.lastName}`},
-                      { label: 'Role', value: row.role},
+                      { label: 'Role', value: row.employeeId},
                       { label: 'Status', value: row.employeeType},
                       { label: 'Department', align: 'center', value: row.designation},
                       { key: '', value: ''},
@@ -169,6 +174,7 @@ const EmployeeList = () => {
                     key={row.id}
                     selected={selected.indexOf(row.name) !== -1}
                     handleClick= {(event) => handleClick(event, row.name)}
+                    removeData={() => removeEmployee(row.id)}
                   />
                 ))
               }

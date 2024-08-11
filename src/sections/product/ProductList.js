@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../../slices/productSlice';
+import { fetchProducts, deleteProduct } from '../../slices/productSlice';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -116,6 +116,10 @@ const ProductList = () => {
 
   const notFound = !dataFiltered.length && !!filterName;
 
+  const removeProduct = (id) => {
+    dispatch(deleteProduct(id));
+  }
+
 
   return (
     <Container>
@@ -167,7 +171,8 @@ const ProductList = () => {
                     ]}
                     key={row.id}
                     selected={selected.indexOf(row.name) !== -1}
-                    handleClick= {(event) => handleClick(event, row.name)}
+                    handleClick={(event) => handleClick(event, row.name)}
+                    removeData={() => removeProduct(row.id)}
                   />
                 ))
               }
