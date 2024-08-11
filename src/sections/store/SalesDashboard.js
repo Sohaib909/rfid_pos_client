@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Typography, Box, Grid, Paper, Table, TableBody, TableContainer, Button, TextField, Autocomplete, Divider,Drawer, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { Container, Typography, Box, Grid, Paper, Table, TableBody, TableContainer, Button, TextField, Autocomplete, Divider, Drawer, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import Iconify from '../../components/iconify';
 import './style/SalesDashboard.css';
 import { fetchProductsDataForSales, createSale } from '../../slices/saleSlice';
@@ -83,7 +83,6 @@ const SalesDashboard = () => {
         item.sku === sku ? { ...item, quantity: Math.max(0, item.quantity + delta) } : item
       )
     });
-    console.log('Items after quantity change:', formData);
   };
 
   const subTotalAmount = () => {
@@ -110,7 +109,6 @@ const SalesDashboard = () => {
       ...formData,
       [name]: value,
     });
-    console.log(formData)
   };
 
   const setPaymentMethod = (e) => {
@@ -119,7 +117,6 @@ const SalesDashboard = () => {
       ...formData,
       paymentMethod: value,
     });
-    console.log(formData)
   };
 
   const removeItemFromCart = (sku) => {

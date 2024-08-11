@@ -201,33 +201,6 @@ const AddEmployee = () => {
                   margin="normal"
                   required
                   fullWidth
-                  id="username"
-                  label="User Name"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="password"
-                  label="Default Password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
                   id="employeeType"
                   label="Select Employee Type"
                   name="employeeType"
@@ -321,7 +294,7 @@ const AddEmployee = () => {
               Back
             </Button>
           )}
-          {step < 3 ? (
+          {step < 2 ? (
             <Button
               variant="contained"
               color="primary"
