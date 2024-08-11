@@ -31,7 +31,7 @@ export default function MTableRow({
         )}
         {rowLabel.map((rowCell, index) => (
           rowCell.profileSection ? (
-            <TableCell  key={index}component="th" scope="row" padding="none">
+            <TableCell  key={rowCell.id} component="th" scope="row" padding="none">
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar alt="" src={rowCell.avatarUrl} />
                 <Typography variant="subtitle2" noWrap>

@@ -38,9 +38,6 @@ const ProductList = () => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const filteredProducts = products.filter(prod =>
-    `${prod.sku}`.includes(searchTerm) || `${prod.name}`.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const handleNewProduct = () => {
     history.push('/products/new');
@@ -68,7 +65,7 @@ const ProductList = () => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = filteredProducts.map((n) => n.name);
+      const newSelecteds = dataFiltered.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -108,7 +105,7 @@ const ProductList = () => {
   };
 
   const dataFiltered = applyFilter({
-    inputData: filteredProducts,
+    inputData: products,
     comparator: getComparator(order, orderBy),
     filterFields: ["name", "sku"],
     filterValue: filterName
@@ -145,7 +142,7 @@ const ProductList = () => {
               <MTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={filteredProducts.length}
+                rowCount={dataFiltered.length}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
@@ -178,7 +175,7 @@ const ProductList = () => {
               }
               <TableEmptyRows
                 height={77}
-                emptyRows={emptyRows(page, rowsPerPage, filteredProducts.length)}
+                emptyRows={emptyRows(page, rowsPerPage, dataFiltered.length)}
               />
 
                 {notFound && <TableNoData query={filterName} />}
@@ -190,7 +187,7 @@ const ProductList = () => {
         <TablePagination
           page={page}
           component="div"
-          count={filteredProducts.length}
+          count={dataFiltered.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}

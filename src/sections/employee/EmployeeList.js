@@ -117,7 +117,6 @@ const EmployeeList = () => {
   const notFound = !dataFiltered.length && !!filterName;
 
   const removeEmployee = (id) => {
-    console.log(id);
     dispatch(deleteEmployee(id));
 
   }
