@@ -18,6 +18,7 @@ export default function MTableRow({
   handleClick,
   isSalesDashboard = false,
   handleQuantityChange,
+  updateData,
   removeData
 }) {
   return (
@@ -61,7 +62,7 @@ export default function MTableRow({
         ))}
         <TableCell style={{ textAlign: 'center'}} >
           { !isSalesDashboard ? (
-            <IconButton>
+            <IconButton onClick={updateData}>
               <Edit />
             </IconButton>
           ) : null}
@@ -88,5 +89,6 @@ MTableRow.propTypes = {
   status: PropTypes.string,
   isSalesDashboard: PropTypes.bool,
   handleQuantityChange: PropTypes.func,
+  updateData: PropTypes.func,
   removeData: PropTypes.func
 };

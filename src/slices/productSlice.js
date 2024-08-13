@@ -17,6 +17,16 @@ export const deleteProduct = createAsyncThunk('product/deleteProduct', async (id
   return response.data;
 });
 
+export const fetchProduct = createAsyncThunk('product/fetchProduct', async (id) => {
+  const response = await axios.get(`/product/${id}`);
+  return response.data;
+});
+
+export const updateProduct = createAsyncThunk('product/updateProduct', async (id, productData) => {
+  const response = await axios.put(`/product/${id}`, productData);
+  return response.data;
+});
+
 const productSlice = createSlice({
   name: 'product',
   initialState: {
@@ -46,6 +56,26 @@ const productSlice = createSlice({
         state.products = action.payload;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(fetchProduct.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchProduct.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+      })
+      .addCase(fetchProduct.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(updateProduct.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       })

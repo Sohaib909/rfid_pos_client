@@ -43,6 +43,10 @@ const ProductList = () => {
     history.push('/products/new');
   };
 
+  const handleUpdateProduct = (id) => {
+    history.push(`/products/${id}`);
+  };
+
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -169,6 +173,7 @@ const ProductList = () => {
                     key={row.id}
                     selected={selected.indexOf(row.name) !== -1}
                     handleClick={(event) => handleClick(event, row.name)}
+                    updateData={() => handleUpdateProduct(row.id)}
                     removeData={() => removeProduct(row.id)}
                   />
                 ))

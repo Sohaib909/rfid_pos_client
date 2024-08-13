@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProduct } from '../../slices/productSlice';
+import { fetchProduct, updateProduct } from '../../slices/productSlice';
 import { Container, TextField, Button, Typography, Tabs, Tab, Box, Grid, Paper } from '@mui/material';
 import './style/ProductForm.css';
 import { useRouter } from '../../routes/hooks';
+import { useParams } from 'react-router-dom';
 
-const AddProduct = () => {
+const UpdateProduct = () => {
+  const { id } = useParams();
   const [formData, setFormData] = useState({
+    id: '',
     name: '',
     sku: '',
     description: '',
@@ -23,6 +26,16 @@ const AddProduct = () => {
   const [step, setStep] = useState(0);
   const history = useRouter();
 
+  useEffect(() => {
+    console.log("aaa")
+    dispatch(fetchProduct(id)).then((result) => {
+      if (result.meta.requestStatus === 'fulfilled') {
+        const product = result.payload;
+        setFormData(product)
+      }
+    });
+  }, [id]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -32,8 +45,9 @@ const AddProduct = () => {
   };
 
   const handleSubmit = (e) => {
+    console.log("abc")
     e.preventDefault();
-    dispatch(createProduct(formData)).then((result) => {
+    dispatch(updateProduct(formData)).then((result) => {
       if (result.meta.requestStatus === 'fulfilled') {
         history.push('/products');
       }
@@ -49,7 +63,7 @@ const AddProduct = () => {
         <Tab label="Product Information" />
         <Tab label="Stock Information" />
       </Tabs>
-      <form onSubmit={handleSubmit}>
+      <form>
         {step === 0 && (
           <Box className="form-step">
             <Grid container spacing={2}>
@@ -156,6 +170,7 @@ const AddProduct = () => {
           )}
           {step < 1 ? (
             <Button
+              type="button"
               variant="contained"
               color="primary"
               onClick={() => setStep(step + 1)}
@@ -166,7 +181,7 @@ const AddProduct = () => {
             <Button
               variant="contained"
               color="primary"
-              type="submit"
+              onClick={(event) => handleSubmit(event)}
             >
               Submit
             </Button>
@@ -177,4 +192,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default UpdateProduct;
