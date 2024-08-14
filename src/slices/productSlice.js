@@ -22,8 +22,8 @@ export const fetchProduct = createAsyncThunk('product/fetchProduct', async (id) 
   return response.data;
 });
 
-export const updateProduct = createAsyncThunk('product/updateProduct', async (id, productData) => {
-  const response = await axios.put(`/product/${id}`, productData);
+export const updateProduct = createAsyncThunk('product/updateProduct', async (productData) => {
+  const response = await axios.put(`/product/${productData.id}`, productData.formData);
   return response.data;
 });
 
