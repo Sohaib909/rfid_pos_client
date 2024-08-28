@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import StoreDashboard from './StoreDashboard';
 import SalesDashboard from './SalesDashboard';
+import Employees from '../employee/EmployeeList';
 
 const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
@@ -12,9 +13,9 @@ const Dashboard = () => {
 
   switch (user.role) {
     case 'Admin':
-      return <StoreDashboard />;
+      return <Employees />;
     case 'Manager':
-      return <StoreDashboard />;
+      return <Employees />;
     case 'Sales Assistant':
       return <SalesDashboard />;
     default:
