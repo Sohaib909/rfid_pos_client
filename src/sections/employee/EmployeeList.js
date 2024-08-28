@@ -152,8 +152,8 @@ const EmployeeList = () => {
                 headLabel={[
                   { id: 'name', label: 'Name' },
                   { id: 'employeeId', label: 'Employee ID' },
-                  { id: 'department', label: 'Department' },
-                  { id: 'status', label: 'Status', align: 'center' },
+                  { id: 'role', label: 'Role' },
+                  { id: 'status', label: 'Status' },
                   { id: '' },
                 ]}
               />
@@ -165,9 +165,9 @@ const EmployeeList = () => {
                   <MTableRow
                     rowLabel={[
                       { label: 'Name', value: `${row.firstName} ${row.lastName}`},
-                      { label: 'Role', value: row.employeeId},
-                      { label: 'Status', value: row.employeeType},
-                      { label: 'Department', align: 'center', value: row.designation},
+                      { label: 'Employee ID', value: row.employeeId},
+                      { label: 'Role', value: row.role},
+                      { label: 'Designation', value: row.employeeType},
                       { key: '', value: ''},
                     ]}
                     key={row.id}
