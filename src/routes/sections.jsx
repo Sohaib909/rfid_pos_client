@@ -19,11 +19,13 @@ export default function Router() {
   const routes = useRoutes([
     {
       element: (
-        <DashboardLayout>
-          <Suspense>
-            <Outlet />
-          </Suspense>
-        </DashboardLayout>
+        <RequireAuth>
+          <DashboardLayout>
+            <Suspense>
+              <Outlet />
+            </Suspense>
+          </DashboardLayout>
+        </RequireAuth>
       ),
       children: [
         { element: <RequireAuth><Dashboard /></RequireAuth>, index: true },
