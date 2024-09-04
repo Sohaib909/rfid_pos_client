@@ -8,6 +8,7 @@ export const Signup = lazy(()=> import('../sections/auth/Signup'));
 export const Dashboard = lazy(()=> import('../sections/store/index.js'));
 export const PrivateRoute = lazy(()=> import('../sections/PrivateRoutes'));
 export const AddEmployee = lazy(()=> import('../sections/employee/AddEmployee'));
+export const UpdateEmployee = lazy(()=> import('../sections/employee/UpdateEmployee'));
 export const EmployeeList = lazy(()=> import('../sections/employee/EmployeeList'));
 export const AddProduct = lazy(()=> import('../sections/product/AddProduct'));
 export const UpdateProduct = lazy(()=> import('../sections/product/UpdateProduct'));
@@ -30,6 +31,7 @@ export default function Router() {
       children: [
         { element: <RequireAuth><Dashboard /></RequireAuth>, index: true },
         { path: 'employees', element: <RequireAuth><EmployeeList /></RequireAuth> },
+        { path: 'employees/:id', element: <RequireAuth><UpdateEmployee /></RequireAuth> },
         { path: 'products', element: <RequireAuth><ProductList /></RequireAuth> },
         { path: 'products/new', element: <RequireAuth><AddProduct /></RequireAuth> },
         { path: 'products/:id', element: <RequireAuth><UpdateProduct /></RequireAuth> },

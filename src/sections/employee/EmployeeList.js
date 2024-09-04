@@ -46,6 +46,10 @@ const EmployeeList = () => {
     history.push('/employees/new');
   };
 
+  const handleUpdateEmployee = (id) => {
+    history.push(`/employees/${id}`);
+  };
+
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -172,6 +176,7 @@ const EmployeeList = () => {
                     ]}
                     key={row.id}
                     selected={selected.indexOf(row.name) !== -1}
+                    updateData={() => handleUpdateEmployee(row.id)}
                     handleClick= {(event) => handleClick(event, row.name)}
                     removeData={() => removeEmployee(row.id)}
                   />
