@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createEmployee } from '../../slices/employeeSlice';
+import { fetchEmployee, updateEmployee } from '../../slices/employeeSlice';
 import './style/AddEmployee.css';
 import { useRouter } from '../../routes/hooks';
+import { useParams } from 'react-router-dom';
 import EmployeeForm from '../../components/forms/employee-form';
 
 
-const AddEmployee = () => {
+const UpdateEmployee = () => {
+  const { id } = useParams();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -26,9 +28,18 @@ const AddEmployee = () => {
   const error = useSelector((state) => state.product.error);
   const history = useRouter();
 
+  useEffect(() => {
+    dispatch(fetchEmployee(id)).then((result) => {
+      if (result.meta.requestStatus === 'fulfilled') {
+        const employee = result.payload;
+        setFormData(employee)
+      }
+    });
+  }, [id]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createEmployee(formData)).then((result) => {
+    dispatch(updateEmployee({id, formData})).then((result) => {
       if (result.meta.requestStatus === 'fulfilled') {
         history.push('/employees');
       }
@@ -41,10 +52,10 @@ const AddEmployee = () => {
       setFormData={setFormData}
       status={status}
       error={error}
-      formType="Create"
+      formType="Update"
       handleSubmit={(event) => handleSubmit(event)}
     />
   );
 };
 
-export default AddEmployee;
+export default UpdateEmployee;
