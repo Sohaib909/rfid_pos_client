@@ -186,11 +186,17 @@ const SalesDashboard = () => {
       <Grid item display="flex">
         <Autocomplete
           options={filteredProducts}
-          getOptionLabel={(option) => `${option.sku}: ${option.name}`}
+          getOptionLabel={(option) => `${option.name}`}
+          filterOptions={(options, state) => 
+            options.filter((option) =>
+              option.name.toLowerCase().includes(state.inputValue.toLowerCase()) ||
+              option.sku.toLowerCase().includes(state.inputValue.toLowerCase())
+            )
+          }
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Add Product by SKU"
+              label="Add Product by Name or SKU"
               value={sku}
               onChange={handleProductsSearch}
               fullWidth
