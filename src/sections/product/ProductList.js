@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../../slices/productSlice';
+import { fetchProducts, deleteProduct } from '../../slices/productSlice';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -38,12 +38,13 @@ const ProductList = () => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const filteredProducts = products.filter(prod =>
-    `${prod.sku}`.includes(searchTerm) || `${prod.name}`.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const handleNewProduct = () => {
     history.push('/products/new');
+  };
+
+  const handleUpdateProduct = (id) => {
+    history.push(`/products/${id}`);
   };
 
   const [page, setPage] = useState(0);
@@ -68,7 +69,7 @@ const ProductList = () => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = filteredProducts.map((n) => n.name);
+      const newSelecteds = dataFiltered.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -108,7 +109,7 @@ const ProductList = () => {
   };
 
   const dataFiltered = applyFilter({
-    inputData: filteredProducts,
+    inputData: products,
     comparator: getComparator(order, orderBy),
     filterFields: ["name", "sku"],
     filterValue: filterName
@@ -116,13 +117,17 @@ const ProductList = () => {
 
   const notFound = !dataFiltered.length && !!filterName;
 
+  const removeProduct = (id) => {
+    dispatch(deleteProduct(id));
+  }
+
 
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Products</Typography>
 
-        <Button variant="contained" color="inherit" onClick={handleNewProduct} startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button variant="contained" color="primary" onClick={handleNewProduct} startIcon={<Iconify icon="eva:plus-fill" />}>
           New Product
         </Button>
       </Stack>
@@ -141,7 +146,7 @@ const ProductList = () => {
               <MTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={filteredProducts.length}
+                rowCount={dataFiltered.length}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
@@ -164,17 +169,18 @@ const ProductList = () => {
                       { label: 'Sku', value: row.sku},
                       { label: 'Price', value: row.price},
                       { label: 'Quantity', value: row.quantity},
-                      { key: '', value: ''},
                     ]}
                     key={row.id}
                     selected={selected.indexOf(row.name) !== -1}
-                    handleClick= {(event) => handleClick(event, row.name)}
+                    handleClick={(event) => handleClick(event, row.name)}
+                    updateData={() => handleUpdateProduct(row.id)}
+                    removeData={() => removeProduct(row.id)}
                   />
                 ))
               }
               <TableEmptyRows
                 height={77}
-                emptyRows={emptyRows(page, rowsPerPage, filteredProducts.length)}
+                emptyRows={emptyRows(page, rowsPerPage, dataFiltered.length)}
               />
 
                 {notFound && <TableNoData query={filterName} />}
@@ -186,7 +192,7 @@ const ProductList = () => {
         <TablePagination
           page={page}
           component="div"
-          count={filteredProducts.length}
+          count={dataFiltered.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchEmployees } from '../../slices/employeeSlice';
+import { fetchEmployees, deleteEmployee } from '../../slices/employeeSlice';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -116,13 +116,17 @@ const EmployeeList = () => {
 
   const notFound = !dataFiltered.length && !!filterName;
 
+  const removeEmployee = (id) => {
+    dispatch(deleteEmployee(id));
+
+  }
 
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Employees</Typography>
 
-        <Button variant="contained" color="inherit" onClick={handleNewEmployee} startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button variant="contained" color="primary" onClick={handleNewEmployee} startIcon={<Iconify icon="eva:plus-fill" />}>
           New Employee
         </Button>
       </Stack>
@@ -148,8 +152,8 @@ const EmployeeList = () => {
                 headLabel={[
                   { id: 'name', label: 'Name' },
                   { id: 'employeeId', label: 'Employee ID' },
-                  { id: 'department', label: 'Department' },
-                  { id: 'status', label: 'Status', align: 'center' },
+                  { id: 'role', label: 'Role' },
+                  { id: 'status', label: 'Status' },
                   { id: '' },
                 ]}
               />
@@ -161,14 +165,15 @@ const EmployeeList = () => {
                   <MTableRow
                     rowLabel={[
                       { label: 'Name', value: `${row.firstName} ${row.lastName}`},
+                      { label: 'Employee ID', value: row.employeeId},
                       { label: 'Role', value: row.role},
-                      { label: 'Status', value: row.employeeType},
-                      { label: 'Department', align: 'center', value: row.designation},
+                      { label: 'Designation', value: row.employeeType},
                       { key: '', value: ''},
                     ]}
                     key={row.id}
                     selected={selected.indexOf(row.name) !== -1}
                     handleClick= {(event) => handleClick(event, row.name)}
+                    removeData={() => removeEmployee(row.id)}
                   />
                 ))
               }

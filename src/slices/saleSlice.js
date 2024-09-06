@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const fetchProductsDataForSales = createAsyncThunk('sale/fetchProductsDataForSales', async () => {
-  const response = await axios.get('/sale/products_data');
+export const fetchProductsDataForSales = createAsyncThunk('sale/fetchProductsDataForSales', async (val) => {
+  const response = await axios.get(`/sale/products_data`, { params: { sku: val } })
   return response.data;
 });
 
@@ -14,7 +14,6 @@ export const createSale = createAsyncThunk('sale/createSale', async (saleData) =
 const saleSlice = createSlice({
   name: 'sale',
   initialState: {
-    productsData: [],
     status: 'idle',
     error: null,
   },
@@ -26,11 +25,9 @@ const saleSlice = createSlice({
       })
       .addCase(fetchProductsDataForSales.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.productsData = action.payload;
       })
       .addCase(fetchProductsDataForSales.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
       })
       .addCase(createSale.pending, (state) => {
         state.status = 'loading';

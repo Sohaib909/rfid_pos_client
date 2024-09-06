@@ -16,12 +16,10 @@ const AddEmployee = () => {
     gender: '',
     maritalStatus: '',
     nationality: '',
-    employeeId: '',
     username: '',
     password: '',
     employeeType: '',
-    department: '',
-    designation: ''
+    role: '',
   });
 
   const dispatch = useDispatch();
@@ -188,46 +186,6 @@ const AddEmployee = () => {
                   margin="normal"
                   required
                   fullWidth
-                  id="employeeId"
-                  label="Employee ID"
-                  name="employeeId"
-                  value={formData.employeeId}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="username"
-                  label="User Name"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="password"
-                  label="Default Password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
                   id="employeeType"
                   label="Select Employee Type"
                   name="employeeType"
@@ -248,33 +206,19 @@ const AddEmployee = () => {
                   margin="normal"
                   required
                   fullWidth
-                  id="department"
-                  label="Select Department"
-                  name="department"
+                  id="role"
+                  label="Select role"
+                  name="role"
                   select
                   SelectProps={{ native: true }}
-                  value={formData.department}
+                  value={formData.role}
                   onChange={handleChange}
                 >
                   <option value=""></option>
-                  <option value="HR">HR</option>
-                  <option value="Sales">Sales</option>
-                  <option value="Marketing">Marketing</option>
-                  <option value="IT">IT</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Manager">Manager</option>
+                  <option value="Sales Assistant">Sales Assistant</option>
                 </TextField>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="designation"
-                  label="Enter Designation"
-                  name="designation"
-                  value={formData.designation}
-                  onChange={handleChange}
-                />
               </Grid>
             </Grid>
           </Box>
@@ -321,7 +265,7 @@ const AddEmployee = () => {
               Back
             </Button>
           )}
-          {step < 3 ? (
+          {step < 2 ? (
             <Button
               variant="contained"
               color="primary"

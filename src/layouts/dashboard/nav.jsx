@@ -37,6 +37,8 @@ export default function Nav({ openNav, onCloseNav }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  const filteredNavConfig = navConfig(user.role);
+
   const renderAccount = (
     <Box
       sx={{
@@ -64,7 +66,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const renderMenu = (
     <Stack component="nav" spacing={0.5} sx={{ px: 2 }}>
-      {navConfig.map((item) => (
+      {filteredNavConfig.map((item) => (
         <NavItem key={item.title} item={item} />
       ))}
     </Stack>
