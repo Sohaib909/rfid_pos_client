@@ -1,32 +1,38 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getSubdomainConfig } from '../utils/subdomain';
 import axios from 'axios';
 
 export const createEmployee = createAsyncThunk('employee/addEmployee', async (employeeData) => {
+  const config = getSubdomainConfig();
   const formData = new FormData();
   for (const key in employeeData) {
     formData.append(key, employeeData[key]);
   }
-  const response = await axios.post('/employee', formData);
+  const response = await axios.post('/employee', formData, config);
   return response.data;
 });
 
 export const fetchEmployees = createAsyncThunk('employee/fetchEmployees', async () => {
-  const response = await axios.get('/employee');
+  const config = getSubdomainConfig();
+  const response = await axios.get('/employee', config);
   return response.data;
 });
 
 export const deleteEmployee = createAsyncThunk('employee/deleteEmployee', async (id) => {
-  const response = await axios.delete(`/employee/${id}`);
+  const config = getSubdomainConfig();
+  const response = await axios.delete(`/employee/${id}`, config);
   return response.data;
 });
 
 export const fetchEmployee = createAsyncThunk('employee/fetchEmployee', async (id) => {
-  const response = await axios.get(`/employee/${id}`);
+  const config = getSubdomainConfig();
+  const response = await axios.get(`/employee/${id}`, config);
   return response.data;
 });
 
 export const updateEmployee = createAsyncThunk('employee/updateEmployee', async (employeeData) => {
-  const response = await axios.put(`/employee/${employeeData.id}`, employeeData.formData);
+  const config = getSubdomainConfig();
+  const response = await axios.put(`/employee/${employeeData.id}`, employeeData.formData, config);
   return response.data;
 });
 

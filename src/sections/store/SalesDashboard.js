@@ -193,6 +193,19 @@ const SalesDashboard = () => {
               option.sku.toLowerCase().includes(state.inputValue.toLowerCase())
             )
           }
+          renderOption={(props, option) => (
+            <div {...props} style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
+              <img 
+                src={option.imgUrl}
+                alt={option.name} 
+                style={{ width: '40px', height: '40px', marginRight: '10px', objectFit: 'cover' }} 
+              />
+              <div>
+                <div style={{ fontWeight: 'bold' }}>{option.name}</div>
+                <div style={{ color: 'gray' }}>SKU: {option.sku}</div>
+              </div>
+            </div>
+          )}
           renderInput={(params) => (
             <TextField
               {...params}

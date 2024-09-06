@@ -16,7 +16,8 @@ const UpdateProduct = () => {
     category: '',
     supplierName: '',
     supplierContact: '',
-    quantity: ''
+    quantity: '',
+    imgUrl: ''
   });
 
   const dispatch = useDispatch();

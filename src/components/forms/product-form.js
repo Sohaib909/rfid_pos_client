@@ -78,6 +78,15 @@ export default function ProductForm({
                   onChange={handleChange}
                 />
               </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="imgUrl"
+                  label="Image URL"
+                  fullWidth
+                  value={formData.imgUrl}
+                  onChange={handleChange}
+                />
+              </Grid>
             </Grid>
           </Box>
         )}
