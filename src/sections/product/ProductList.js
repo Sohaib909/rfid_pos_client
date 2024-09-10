@@ -155,6 +155,7 @@ const ProductList = () => {
                   { id: 'sku', label: 'SKU' },
                   { id: 'price', label: 'Price' },
                   { id: 'quantity', label: 'Quantity' },
+                  { id: 'image', label: 'Image' },
                   { id: '' },
                 ]}
               />
@@ -169,6 +170,7 @@ const ProductList = () => {
                       { label: 'Sku', value: row.sku},
                       { label: 'Price', value: row.price},
                       { label: 'Quantity', value: row.quantity},
+                      { id: 'image', label: 'Image', value: row.imgUrl},
                     ]}
                     key={row.id}
                     selected={selected.indexOf(row.name) !== -1}

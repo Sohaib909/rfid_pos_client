@@ -8,6 +8,7 @@ import debounce from 'lodash.debounce';
 import Scrollbar from '../../components/scrollbar';
 import MTableRow from '../../components/table/table-row';
 import MTableHead from '../../components/table/table-head';
+import ImageModal from '../../components/modal/ImageModal';
 
 const SalesDashboard = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,8 @@ const SalesDashboard = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [openImageModal, setOpenImageModal] = useState(false);
+  const [modalImage, setModalImage] = useState('');
 
   useEffect(() => {
     const subTotal = subTotalAmount();
@@ -134,6 +137,17 @@ const SalesDashboard = () => {
     setDrawerOpen(open);
   };
 
+  const handleImageClick = (e, imageUrl) => {
+    e.stopPropagation();
+    setModalImage(imageUrl);
+    setOpenImageModal(true);
+  };
+
+  const closeImageModal = () => {
+    setOpenImageModal(false);
+    setModalImage('');
+  };
+
   return (
     <Container className="dashboard-container">
       <Grid container spacing={1}>
@@ -199,6 +213,7 @@ const SalesDashboard = () => {
                 src={option.imgUrl}
                 alt={option.name} 
                 style={{ width: '40px', height: '40px', marginRight: '10px', objectFit: 'cover' }} 
+                onClick={(e) => handleImageClick(e, option.imgUrl)}
               />
               <div>
                 <div style={{ fontWeight: 'bold' }}>{option.name}</div>
@@ -239,7 +254,7 @@ const SalesDashboard = () => {
             <MTableHead
               isSalesDashboard={true}
               headLabel={[
-                { id: 'sr#', label: 'S.No' },
+                { id: 'image', label: 'Image' },
                 { id: 'name', label: 'Product Name' },
                 { id: 'sku', label: 'SKU' },
                 { id: 'quantity', label: 'Quantity' },
@@ -252,10 +267,10 @@ const SalesDashboard = () => {
               formData.items.map((item, index) => (
                 <MTableRow
                   rowLabel={[
-                    { label: 'S.No', value: index + 1},
+                    { id: 'image', label: 'Image', value: item.imgUrl},
                     { label: 'Product Name', value: item.name},
                     { label: 'SKU', value: item.sku},
-                    { label: 'Quantity', value: item.quantity},
+                    { id: 'salesQuantity', label: 'Quantity', value: item.quantity},
                     { label: 'Price', value: item.quantity * item.price},
                   ]}
                   key={index}
@@ -338,6 +353,11 @@ const SalesDashboard = () => {
           )
         }
       </Drawer>
+      <ImageModal
+        openModal={openImageModal}
+        imageUrl={modalImage}
+        closeModal={closeImageModal}
+      />
     </Container>
   );
 };

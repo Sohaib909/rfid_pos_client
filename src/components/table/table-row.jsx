@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-
+import React, { useState } from 'react';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import TableRow from '@mui/material/TableRow';
@@ -9,6 +9,9 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import { AddCircle, RemoveCircle, DeleteRounded, Edit } from '@mui/icons-material';
+
+import ImageModal from '../modal/ImageModal';
+
 
 // ----------------------------------------------------------------------
 
@@ -21,6 +24,19 @@ export default function MTableRow({
   updateData,
   removeData
 }) {
+  const [openImageModal, setOpenImageModal] = useState(false);
+  const [modalImage, setModalImage] = useState('');
+
+  const handleImageClick = (imageUrl) => {
+    setModalImage(imageUrl);
+    setOpenImageModal(true);
+  };
+
+  const closeImageModal = () => {
+    setOpenImageModal(false);
+    setModalImage('');
+  };
+
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
@@ -40,7 +56,7 @@ export default function MTableRow({
                 </Typography>
               </Stack>
             </TableCell>
-          ) : isSalesDashboard && rowCell.label === "Quantity" ? (
+          ) : rowCell.id === "salesQuantity" ? (
             <TableCell key={index}>
               <IconButton
                 style={{ color: 'red'}}  
@@ -55,6 +71,14 @@ export default function MTableRow({
               >
                 <AddCircle />
               </IconButton>
+            </TableCell>
+          ) : rowCell.id === "image" ? (
+            <TableCell key={index}>
+              <img 
+                src={rowCell.value}
+                style={{ width: '40px', height: '40px', marginRight: '10px', objectFit: 'cover', cursor: 'pointer' }} 
+                onClick={() => handleImageClick(rowCell.value)}
+              />
             </TableCell>
           ) : (
             <TableCell key={index}>{rowCell.value}</TableCell>
@@ -74,6 +98,11 @@ export default function MTableRow({
           </IconButton>
         </TableCell>
       </TableRow>
+      <ImageModal
+        openModal={openImageModal}
+        imageUrl={modalImage}
+        closeModal={closeImageModal}
+      />
     </>
   );
 }
