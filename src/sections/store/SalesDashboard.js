@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Typography, Box, Grid, Paper, Table, TableBody, TableContainer, Button, TextField, Autocomplete, Divider, Drawer, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
-import Iconify from '../../components/iconify';
+import { Container, Typography, Box, Grid, Paper, Table, TableBody, TableContainer, Button, TextField, Divider, Drawer, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import './style/SalesDashboard.css';
-import { fetchProductsDataForSales, createSale } from '../../slices/saleSlice';
-import debounce from 'lodash.debounce';
+import { createSale } from '../../slices/saleSlice';
 import Scrollbar from '../../components/scrollbar';
 import MTableRow from '../../components/table/table-row';
 import MTableHead from '../../components/table/table-head';
+import ProductSearch from '../../components/shared/ProductSearch';
 
 const SalesDashboard = () => {
   const dispatch = useDispatch();
@@ -19,11 +18,9 @@ const SalesDashboard = () => {
     paymentMethod: 'cash',
     items: []
   });
-  const [sku, setSku] = useState('');
+  
   const [quantity, setQuantity] = useState(1);
   const [taxAmount, setTaxAmount] = useState(0);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
@@ -37,30 +34,7 @@ const SalesDashboard = () => {
     });
   }, [formData.items]);
 
-
-  const resetManualItemAddData = () => {
-    setSku('');
-    setQuantity(1);
-    setSelectedProduct(null);
-    setFilteredProducts([])
-  };
-
-
-  const handleProductsSearch = debounce(async (e) => {
-    const searchText = e.target.value;
-    setSku(searchText);
-    if (searchText.length > 0) {
-      dispatch(fetchProductsDataForSales(searchText)).then((result) => {
-        if (result.meta.requestStatus === 'fulfilled') {
-          setFilteredProducts(result.payload);
-        }
-      });
-    } else {
-      setFilteredProducts([]);
-    }
-  }, 300);
-
-  const addItemToCart = () => {
+  const addItemToCart = (selectedProduct) => {
     const existingItem = formData.items.find((item) => item.sku === selectedProduct.sku);
     if (existingItem) {
       setFormData({
@@ -73,7 +47,6 @@ const SalesDashboard = () => {
         items: [...formData.items, { ...selectedProduct, quantity }]
       });
     }
-    resetManualItemAddData();
   };
 
   const handleQuantityChange = (sku, delta) => {
@@ -184,54 +157,9 @@ const SalesDashboard = () => {
         </Grid>
       </Grid>
       <Grid item display="flex">
-        <Autocomplete
-          options={filteredProducts}
-          getOptionLabel={(option) => `${option.name}`}
-          filterOptions={(options, state) => 
-            options.filter((option) =>
-              option.name.toLowerCase().includes(state.inputValue.toLowerCase()) ||
-              option.sku.toLowerCase().includes(state.inputValue.toLowerCase())
-            )
-          }
-          renderOption={(props, option) => (
-            <div {...props} style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
-              <img 
-                src={option.imgUrl}
-                alt={option.name} 
-                style={{ width: '40px', height: '40px', marginRight: '10px', objectFit: 'cover' }} 
-              />
-              <div>
-                <div style={{ fontWeight: 'bold' }}>{option.name}</div>
-                <div style={{ color: 'gray' }}>SKU: {option.sku}</div>
-              </div>
-            </div>
-          )}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Add Product by Name or SKU"
-              value={sku}
-              onChange={handleProductsSearch}
-              fullWidth
-              margin="normal"
-            />
-          )}
-          onChange={(event, newValue) => {
-            setSelectedProduct(newValue);
-          }}
-          value={selectedProduct}
-          style={{ width: '100%', paddingRight: "1rem" }}
+        <ProductSearch 
+          addItem={(selectedProduct) => addItemToCart(selectedProduct)}
         />
-        <Button 
-          disabled={!selectedProduct}
-          variant="contained" 
-          color="primary" 
-          startIcon={<Iconify icon="eva:plus-fill" />} 
-          onClick={addItemToCart}
-          style={{ margin: "16px 0 8px" }}
-        >
-          Add
-        </Button>
       </Grid>
       <Scrollbar>
         <TableContainer sx={{ overflow: 'unset' }}>
@@ -239,7 +167,7 @@ const SalesDashboard = () => {
             <MTableHead
               isSalesDashboard={true}
               headLabel={[
-                { id: 'sr#', label: 'S.No' },
+                { id: 'image', label: 'Image' },
                 { id: 'name', label: 'Product Name' },
                 { id: 'sku', label: 'SKU' },
                 { id: 'quantity', label: 'Quantity' },
@@ -252,10 +180,10 @@ const SalesDashboard = () => {
               formData.items.map((item, index) => (
                 <MTableRow
                   rowLabel={[
-                    { label: 'S.No', value: index + 1},
+                    { id: 'image', label: 'Image', value: item.imgUrl},
                     { label: 'Product Name', value: item.name},
                     { label: 'SKU', value: item.sku},
-                    { label: 'Quantity', value: item.quantity},
+                    { id: 'salesQuantity', label: 'Quantity', value: item.quantity},
                     { label: 'Price', value: item.quantity * item.price},
                   ]}
                   key={index}

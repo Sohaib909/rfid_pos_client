@@ -22,7 +22,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
 import axios from 'axios';
 import FileDownload from 'js-file-download';
-import FormModal from '../../components/form-modal/FormModal';
+import FormModal from '../../components/modal/FormModal';
 import './style/GenerateReport.css';
 
 const GenerateReport = () => {
