@@ -33,6 +33,12 @@ export const updateProduct = createAsyncThunk('product/updateProduct', async (pr
   return response.data;
 });
 
+export const searchProducts = createAsyncThunk('product/searchProducts', async (val) => {
+  const config = getSubdomainConfig();
+  const response = await axios.get('/product/products_data', { params: { searchTerm: val }, ...config })
+  return response.data;
+});
+
 const productSlice = createSlice({
   name: 'product',
   initialState: {
@@ -95,6 +101,15 @@ const productSlice = createSlice({
       .addCase(deleteProduct.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(searchProducts.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(searchProducts.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+      })
+      .addCase(searchProducts.rejected, (state, action) => {
+        state.status = 'failed';
       });
   },
 });
