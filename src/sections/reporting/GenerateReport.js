@@ -17,6 +17,9 @@ import {
   Box,
   Collapse,
   IconButton,
+  Select,       
+  FormControl,  
+  InputLabel,
 } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
@@ -36,6 +39,8 @@ const GenerateReport = () => {
   const [selectedColumns, setSelectedColumns] = useState([]);
   const [name, setName] = useState('');
   const [module, setModule] = useState('');
+  const [dateFilter, setDateFilter] = useState("7");
+  const [selectedProducts, setSelectedProducts] = useState([]);
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -64,7 +69,7 @@ const GenerateReport = () => {
     }
   }, [module]);
 
-  const handleGenerateReport = async () => {
+  const handleGenerateReport = async (products = selectedProducts) => {
     if (!reportType || !selectedColumns.length || !name) {
       console.error('Report type, columns, or name are not set.');
       return;
@@ -72,7 +77,9 @@ const GenerateReport = () => {
 
     try {
       const response = await axios.get(`/report/${reportType}/${format}`, {
-        params: { columns: selectedColumns.join(',') },
+        params: { columns: selectedColumns.join(','),
+        dateFilter,
+        productSkus: selectedProducts.map(product => product.sku).join(',') },
         responseType: 'blob',
       });
       FileDownload(response.data, `${name}_report.${format}`);
@@ -89,7 +96,9 @@ const GenerateReport = () => {
 
     try {
       const response = await axios.get(`/report/${template.module}/${template.format}`, {
-        params: { columns: template.columns.join(',') },
+        params: { columns: template.columns.join(','),
+        dateFilter: template.duration,
+        productSkus: template.productSkus.join(',') },
         responseType: 'blob',
       });
       FileDownload(response.data, `${template.name}_report.${template.format}`);
@@ -114,6 +123,15 @@ const GenerateReport = () => {
     setOpenModal(false);
   };
 
+  const handleAddProduct = (product, remove = false) => {
+    if (remove) {
+      setSelectedProducts(selectedProducts.filter(p => p.sku !== product.sku));
+    } else if (product) {
+      setSelectedProducts([...selectedProducts, product]);
+    }
+  };
+
+
   const handleSaveTemplate = async () => {
     try {
       const response = await axios.post('/report/template', {
@@ -121,6 +139,8 @@ const GenerateReport = () => {
         module: reportType,
         format,
         columns: selectedColumns,
+        duration: dateFilter,
+        productSkus: selectedProducts.map(product => product.sku),
       });
       console.log('Template saved:', response.data);
 
@@ -152,6 +172,7 @@ const GenerateReport = () => {
     setModule(selectedModule);
     setReportType(selectedModule); // Set reportType here
     setSelectedColumns([]);
+    setSelectedProducts([]);
     setName("");
   };
 
@@ -165,9 +186,25 @@ const GenerateReport = () => {
             {openTemplates ? <ExpandLess /> : <ExpandMore />}
           </IconButton>
         </Box>
-        <Button variant="contained" color="primary" onClick={handleNewReport}>
-          New Report
-        </Button>
+        <Box display="flex" alignItems="center">
+          <FormControl margin="normal" sx={{ mr: 2, mb: 1.5, minWidth: 150 }}>
+            <InputLabel>Duration</InputLabel>
+            <Select
+              value={dateFilter} // Controlled value
+              onChange={(e) => setDateFilter(e.target.value)}
+              label="Duration"
+              sx={{ height: '40px' }} // Adjust height to match the button
+            >
+              <MenuItem value="7">7 Days</MenuItem>
+              <MenuItem value="15">15 Days</MenuItem>
+              <MenuItem value="30">30 Days</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Button variant="contained" color="primary" onClick={handleNewReport} sx={{ height: '40px' }}>
+            New Report
+          </Button>
+        </Box>
       </Box>
       
       <Collapse in={openTemplates} timeout="auto" unmountOnExit>
@@ -178,6 +215,8 @@ const GenerateReport = () => {
                 <TableCell>Name</TableCell>
                 <TableCell>Module</TableCell>
                 <TableCell>Type</TableCell>
+                <TableCell>Duration</TableCell>
+                <TableCell>Products</TableCell>
                 <TableCell>Download</TableCell>
               </TableRow>
             </TableHead>
@@ -187,6 +226,8 @@ const GenerateReport = () => {
                   <TableCell>{template.name}</TableCell>
                   <TableCell>{template.module}</TableCell>
                   <TableCell>{template.format}</TableCell>
+                  <TableCell>{template.duration} Days</TableCell>
+                  <TableCell>{template.productNames.join(', ')}</TableCell>
                   <TableCell>
                     <Button 
                       variant="outlined" 
@@ -220,7 +261,11 @@ const GenerateReport = () => {
         handleGenerateReport={handleGenerateReport}
         reportType={reportType}
         setReportType={setReportType}
-        handleModuleChange={handleModuleChange} // Pass handleModuleChange as prop
+        handleModuleChange={handleModuleChange}
+        duration={dateFilter}
+        setDuration={setDateFilter}
+        selectedProducts={selectedProducts}
+        addProduct={(product, remove) => handleAddProduct(product, remove)}
       />
     </Container>
   );
