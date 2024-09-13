@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   Dialog,
@@ -12,8 +12,12 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
-  FormGroup
+  FormGroup,
+  Grid,
+  IconButton
 } from '@mui/material';
+import ProductSearch from '../shared/ProductSearch';
+import CloseIcon from '@mui/icons-material/Close';
 
 const FormModal = ({
   open,
@@ -31,14 +35,25 @@ const FormModal = ({
   handleGenerateReport,
   reportType,
   setReportType,
-  handleModuleChange // Add this prop
+  handleModuleChange,
+  duration,
+  setDuration,
+  selectedProducts,
+  addProduct
 }) => {
+  const [productList, setProductList] = useState(selectedProducts || []);
+
+  useEffect(() => {
+    setProductList(selectedProducts); // Sync with selectedProducts from parent
+  }, [selectedProducts]);
+
   const handleSave = () => {
-    onSave({ module, name, format, columns: selectedColumns });
+    onSave({ module, name, format, columns: selectedColumns, productList });
     setName('');
     setSelectedColumns([]);
     setModule('');
     setFormat('csv');
+    setDuration('7'); // Default duration
     setReportType(module); // Update reportType when saving template
   };
 
@@ -51,10 +66,22 @@ const FormModal = ({
     );
   };
 
+  const handleAddProduct = (product) => {
+    if (product && !productList.some((p) => p.sku === product.sku)) { // Ensure the product is not already in the list
+      setProductList([...productList, product]);
+      addProduct(product);
+    }
+  };
+
+  const handleRemoveProduct = (productToRemove) => {
+    setProductList(productList.filter((product) => product.sku !== productToRemove.sku));
+    addProduct(productToRemove, true);
+  };
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>New Report</DialogTitle>
-      <DialogContent>
+      <DialogContent style={{ minWidth: '600px' }}>
         <FormControl fullWidth margin="normal">
           <InputLabel>Module</InputLabel>
           <Select
@@ -66,8 +93,45 @@ const FormModal = ({
             <MenuItem value="product">Products</MenuItem>
           </Select>
         </FormControl>
+        <Grid item display="flex">
+          {module === 'product' && (
+            <ProductSearch addItem={handleAddProduct} />
+          )}
+        </Grid>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '10px' }}>
+          {productList.map((product, index) => (
+            product && (
+              <div
+                key={index}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  backgroundColor: '#f0f0f0',
+                  padding: '5px',
+                  borderRadius: '8px',
+                  marginRight: '10px',
+                }}
+              >
+                <img
+                  src={product.imgUrl}
+                  alt={product.name}
+                  style={{ width: 50, height: 50, marginRight: 10 }}
+                />
+                <span>{product.name}</span>
+                <IconButton
+                  onClick={() => handleRemoveProduct(product)}
+                  aria-label="remove"
+                  size="small"
+                >
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </div>
+            )
+          ))}
+        </div>
         <TextField
           fullWidth
+          style={{ marginTop: '30px' }}
           margin="normal"
           label="Name"
           value={name}
