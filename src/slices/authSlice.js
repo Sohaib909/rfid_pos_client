@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { setStores } from './storeSlice';
+import { getSubdomainConfig } from '../utils/subdomain';
 
 export const signup = createAsyncThunk('auth/signup', async (data) => {
   const response = await axios.post('/auth/signup', data);
@@ -8,7 +9,8 @@ export const signup = createAsyncThunk('auth/signup', async (data) => {
 });
 
 export const login = createAsyncThunk('auth/login', async (credentials, { dispatch }) => {
-  const response = await axios.post('/auth/login', credentials);
+  const config = getSubdomainConfig();
+  const response = await axios.post('/auth/login', credentials, config);
   const user = response.data;
   dispatch(setStores(user.stores));  // Dispatch the setStores action
   return user;
@@ -36,7 +38,16 @@ const authSlice = createSlice({
       .addCase(signup.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.user = action.payload;
-        localStorage.setItem('user', JSON.stringify(action.payload));
+        // localStorage.setItem('user', JSON.stringify(action.payload));
+        
+        // Redirect to the user's subdomain after signup
+        const subdomain = action.payload.stores && action.payload.stores.length > 0
+          ? action.payload.subdomain
+          : null;
+        
+        if (subdomain) {
+          window.location.href = `http://${subdomain}.localhost:3000`; // Replace example.com with your main domain
+        }
       })
       .addCase(signup.rejected, (state, action) => {
         state.status = 'failed';

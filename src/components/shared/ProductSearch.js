@@ -57,6 +57,7 @@ export default function ProductSearch({ addItem }) {
     <>
       <Autocomplete
         options={filteredProducts}
+        disableCloseOnSelect
         getOptionLabel={(option) => `${option.name}`}
         filterOptions={(options, state) => 
           options.filter((option) =>
@@ -70,6 +71,7 @@ export default function ProductSearch({ addItem }) {
               src={option.imgUrl}
               alt={option.name} 
               style={{ width: '40px', height: '40px', marginRight: '10px', objectFit: 'cover' }} 
+              onMouseDown={(e) => e.preventDefault()}
               onClick={(e) => handleImageClick(e, option.imgUrl)}
             />
             <div>

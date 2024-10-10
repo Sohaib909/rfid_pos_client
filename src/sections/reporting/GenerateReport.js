@@ -27,12 +27,13 @@ import axios from 'axios';
 import FileDownload from 'js-file-download';
 import FormModal from '../../components/modal/FormModal';
 import './style/GenerateReport.css';
+import { createTemplate, fetchTemplates, downloadReport } from '../../slices/reportSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const GenerateReport = () => {
   const [format, setFormat] = useState('csv');
   const [anchorEl, setAnchorEl] = useState(null);
   const [reportType, setReportType] = useState('');
-  const [templates, setTemplates] = useState([]);
   const [openTemplates, setOpenTemplates] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [columns, setColumns] = useState([]);
@@ -42,18 +43,13 @@ const GenerateReport = () => {
   const [dateFilter, setDateFilter] = useState("7");
   const [selectedProducts, setSelectedProducts] = useState([]);
 
-  useEffect(() => {
-    const fetchTemplates = async () => {
-      try {
-        const response = await axios.get('/report/templates');
-        setTemplates(response.data);
-      } catch (error) {
-        console.error('Error fetching templates:', error);
-      }
-    };
+  // const [templates, setTemplates] = useState([]);
+  const templates = useSelector((state) => state.report.templates);
+  const dispatch = useDispatch();
 
-    fetchTemplates();
-  }, []);
+  useEffect(() => {
+    dispatch(fetchTemplates());
+  }, [dispatch]);
 
   useEffect(() => {
     if (module) {
@@ -76,13 +72,21 @@ const GenerateReport = () => {
     }
 
     try {
-      const response = await axios.get(`/report/${reportType}/${format}`, {
+      const data = {
         params: { columns: selectedColumns.join(','),
         dateFilter,
         productSkus: selectedProducts.map(product => product.sku).join(',') },
         responseType: 'blob',
+        reportType,
+        format
+      }
+
+      dispatch(downloadReport(data)).then((result) => {
+        if (result.meta.requestStatus === 'fulfilled') {
+          FileDownload(result.payload, `${name}_report.${format}`);
+        }
       });
-      FileDownload(response.data, `${name}_report.${format}`);
+
     } catch (error) {
       console.error('Error generating report:', error);
     }
@@ -95,13 +99,22 @@ const GenerateReport = () => {
     }
 
     try {
-      const response = await axios.get(`/report/${template.module}/${template.format}`, {
+
+      const data = {
         params: { columns: template.columns.join(','),
         dateFilter: template.duration,
         productSkus: template.productSkus.join(',') },
         responseType: 'blob',
+        reportType: template.module,
+        format: template.format
+      }
+
+      dispatch(downloadReport(data)).then((result) => {
+        if (result.meta.requestStatus === 'fulfilled') {
+          FileDownload(result.payload, `${template.name}_report.${template.format}`);
+        }
       });
-      FileDownload(response.data, `${template.name}_report.${template.format}`);
+
     } catch (error) {
       console.error('Error generating report from template:', error);
     }
@@ -134,26 +147,21 @@ const GenerateReport = () => {
 
   const handleSaveTemplate = async () => {
     try {
-      const response = await axios.post('/report/template', {
+
+      const data = {
         name,
         module: reportType,
         format,
         columns: selectedColumns,
         duration: dateFilter,
         productSkus: selectedProducts.map(product => product.sku),
-      });
-      console.log('Template saved:', response.data);
+      }
 
-      // Fetch updated list of templates
-      const fetchTemplates = async () => {
-        try {
-          const templatesResponse = await axios.get('/report/templates');
-          setTemplates(templatesResponse.data);
-        } catch (error) {
-          console.error('Error fetching templates:', error);
+      dispatch(createTemplate(data)).then((result) => {
+        if (result.meta.requestStatus === 'fulfilled') {
+          dispatch(fetchTemplates());
         }
-      };
-      fetchTemplates();
+      });
       
       // Close the modal after saving
       handleModalClose();
@@ -221,7 +229,7 @@ const GenerateReport = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {templates.map((template) => (
+              {templates ? templates.map((template) => (
                 <TableRow key={template.id}>
                   <TableCell>{template.name}</TableCell>
                   <TableCell>{template.module}</TableCell>
@@ -239,7 +247,7 @@ const GenerateReport = () => {
                     </Button>
                   </TableCell>
                 </TableRow>
-              ))}
+              )) : []}
             </TableBody>
           </Table>
         </TableContainer>
