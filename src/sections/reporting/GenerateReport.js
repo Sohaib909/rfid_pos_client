@@ -23,12 +23,12 @@ import {
 } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
-import axios from 'axios';
 import FileDownload from 'js-file-download';
 import FormModal from '../../components/modal/FormModal';
 import './style/GenerateReport.css';
 import { createTemplate, fetchTemplates, downloadReport } from '../../slices/reportSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import axiosInstance from '../../utils/axiosInstance';
 
 const GenerateReport = () => {
   const [format, setFormat] = useState('csv');
@@ -53,17 +53,18 @@ const GenerateReport = () => {
 
   useEffect(() => {
     if (module) {
-      const fetchColumns = async () => {
-        try {
-          const response = await axios.get(`/${module}/columns`);
-          setColumns(response.data);
-        } catch (error) {
-          console.error('Error fetching columns:', error);
-        }
-      };
       fetchColumns();
     }
   }, [module]);
+
+  const fetchColumns = async () => {
+    try {
+      const response = await axiosInstance.get(`/${module}/columns`);
+      setColumns(response.data);
+    } catch (error) {
+      console.error('Error fetching columns:', error);
+    }
+  };
 
   const handleGenerateReport = async (products = selectedProducts) => {
     if (!reportType || !selectedColumns.length || !name) {
