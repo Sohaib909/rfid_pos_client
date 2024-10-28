@@ -1,23 +1,36 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 import { setStores } from './storeSlice';
 import { getSubdomainConfig } from '../utils/subdomain';
 
 export const signup = createAsyncThunk('auth/signup', async (data) => {
-  const response = await axios.post('/auth/signup', data);
+  const response = await axiosInstance.post('/auth/signup', data);
   return response.data;
 });
 
-export const login = createAsyncThunk('auth/login', async (credentials, { dispatch }) => {
-  const config = getSubdomainConfig();
-  const response = await axios.post('/auth/login', credentials, config);
-  const user = response.data;
-  dispatch(setStores(user.stores));  // Dispatch the setStores action
-  return user;
-});
+export const login = createAsyncThunk(
+  'auth/login',
+  async (credentials, { dispatch, rejectWithValue }) => {
+    try {
+      const config = getSubdomainConfig();
+      const response = await axiosInstance.post('/auth/login', credentials, config);
+      const user = response.data;
+
+      dispatch(setStores(user.stores));
+
+      return user;
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue('An unexpected error occurred');
+      }
+    }
+  }
+);
 
 export const logout = createAsyncThunk('auth/logout', async () => {
-  const response = await axios.post('/auth/logout');
+  const response = await axiosInstance.post('/auth/logout');
   // const user = response.data;
   // dispatch(setStores(user.stores));  // Dispatch the setStores action
   return {};
@@ -46,7 +59,7 @@ const authSlice = createSlice({
           : null;
         
         if (subdomain) {
-          window.location.href = `http://${subdomain}.localhost:3000`; // Replace example.com with your main domain
+          window.location.href = `http://${subdomain}.rfid-dev.us-east-2.elasticbeanstalk.com/`; // Replace example.com with your main domain
         }
       })
       .addCase(signup.rejected, (state, action) => {
@@ -63,7 +76,7 @@ const authSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(logout.fulfilled, (state, action) => {
         state.status = 'succeeded';

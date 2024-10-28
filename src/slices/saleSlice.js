@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getSubdomainConfig } from '../utils/subdomain';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 
 export const createSale = createAsyncThunk('sale/createSale', async (saleData) => {
   const config = getSubdomainConfig();
-  const response = await axios.post('/sale', saleData, config);
+  const response = await axiosInstance.post('/sale', saleData, config);
   return response.data;
 });
 

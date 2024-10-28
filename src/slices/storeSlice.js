@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 
 // Async thunk to fetch stores
 export const fetchStores = createAsyncThunk('store/fetchStores', async () => {
-  const response = await axios.get('/store');
+  const response = await axiosInstance.get('/store');
   return response.data;
 });
 
 // Async thunk to create a new store
 export const createStore = createAsyncThunk('store/createStore', async (storeData) => {
-  const response = await axios.post('/store', storeData);
+  const response = await axiosInstance.post('/store', storeData);
   return response.data;
 });
 

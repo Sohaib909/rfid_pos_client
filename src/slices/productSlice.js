@@ -1,41 +1,41 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getSubdomainConfig } from '../utils/subdomain';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 
 // Thunk to create a new product
 export const createProduct = createAsyncThunk('product/createProduct', async (productData) => {
   const config = getSubdomainConfig();
-  const response = await axios.post('/product', productData, config);
+  const response = await axiosInstance.post('/product', productData, config);
   return response.data;
 });
 
 export const fetchProducts = createAsyncThunk('product/fetchProducts', async () => {
   const config = getSubdomainConfig();
-  const response = await axios.get('/product', config);
+  const response = await axiosInstance.get('/product', config);
   return response.data;
 });
 
 export const deleteProduct = createAsyncThunk('product/deleteProduct', async (id) => {
   const config = getSubdomainConfig();
-  const response = await axios.delete(`/product/${id}`, config);
+  const response = await axiosInstance.delete(`/product/${id}`, config);
   return response.data;
 });
 
 export const fetchProduct = createAsyncThunk('product/fetchProduct', async (id) => {
   const config = getSubdomainConfig();
-  const response = await axios.get(`/product/${id}`, config);
+  const response = await axiosInstance.get(`/product/${id}`, config);
   return response.data;
 });
 
 export const updateProduct = createAsyncThunk('product/updateProduct', async (productData) => {
   const config = getSubdomainConfig();
-  const response = await axios.put(`/product/${productData.id}`, productData.formData, config);
+  const response = await axiosInstance.put(`/product/${productData.id}`, productData.formData, config);
   return response.data;
 });
 
 export const searchProducts = createAsyncThunk('product/searchProducts', async (val) => {
   const config = getSubdomainConfig();
-  const response = await axios.get('/product/products_data', { params: { searchTerm: val }, ...config })
+  const response = await axiosInstance.get('/product/products_data', { params: { searchTerm: val }, ...config })
   return response.data;
 });
 
