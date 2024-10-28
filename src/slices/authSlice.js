@@ -59,7 +59,7 @@ const authSlice = createSlice({
           : null;
         
         if (subdomain) {
-          window.location.href = `http://${subdomain}.rfid-dev.us-east-2.elasticbeanstalk.com/`; // Replace example.com with your main domain
+          window.location.href = `http://${subdomain}.visusctrl.com/`; // Replace example.com with your main domain
         }
       })
       .addCase(signup.rejected, (state, action) => {
