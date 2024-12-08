@@ -1,40 +1,40 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getSubdomainConfig } from '../utils/subdomain';
+import { getStoreConfig } from '../utils/subdomain';
 import axiosInstance from '../utils/axiosInstance';
 
 // Thunk to create a new product
 export const createProduct = createAsyncThunk('product/createProduct', async (productData) => {
-  const config = getSubdomainConfig();
+  const config = getStoreConfig();
   const response = await axiosInstance.post('/product', productData, config);
   return response.data;
 });
 
 export const fetchProducts = createAsyncThunk('product/fetchProducts', async () => {
-  const config = getSubdomainConfig();
+  const config = getStoreConfig();
   const response = await axiosInstance.get('/product', config);
   return response.data;
 });
 
 export const deleteProduct = createAsyncThunk('product/deleteProduct', async (id) => {
-  const config = getSubdomainConfig();
+  const config = getStoreConfig();
   const response = await axiosInstance.delete(`/product/${id}`, config);
   return response.data;
 });
 
 export const fetchProduct = createAsyncThunk('product/fetchProduct', async (id) => {
-  const config = getSubdomainConfig();
+  const config = getStoreConfig();
   const response = await axiosInstance.get(`/product/${id}`, config);
   return response.data;
 });
 
 export const updateProduct = createAsyncThunk('product/updateProduct', async (productData) => {
-  const config = getSubdomainConfig();
+  const config = getStoreConfig();
   const response = await axiosInstance.put(`/product/${productData.id}`, productData.formData, config);
   return response.data;
 });
 
 export const searchProducts = createAsyncThunk('product/searchProducts', async (val) => {
-  const config = getSubdomainConfig();
+  const config = getStoreConfig();
   const response = await axiosInstance.get('/product/products_data', { params: { searchTerm: val }, ...config })
   return response.data;
 });

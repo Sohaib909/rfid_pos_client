@@ -17,8 +17,8 @@ const storeSlice = createSlice({
   name: 'store',
   initialState: { stores: [], status: 'idle', error: null },
   reducers: {
-    setStores: (state, action) => {
-      state.stores = action.payload;
+    setStore: (state, action) => {
+      state.store = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -48,5 +48,5 @@ const storeSlice = createSlice({
   },
 });
 
-export const { setStores } = storeSlice.actions;
+export const { setStore } = storeSlice.actions;
 export default storeSlice.reducer;

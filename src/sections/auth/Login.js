@@ -9,14 +9,15 @@ import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [storeId, setStoreId] = useState('');
+  const [employeeId, setEmployeeId] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const { user, status, error } = useSelector((state) => state.auth);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(login({ email, password }));
+    dispatch(login({storeId, employeeId, password }));
   };
 
   if (user) {
@@ -28,10 +29,18 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         <Typography variant="h4">Login</Typography>
         <TextField
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          label="Store ID"
+          type="text"
+          value={storeId}
+          onChange={(e) => setStoreId(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Employee ID"
+          type="text"
+          value={employeeId}
+          onChange={(e) => setEmployeeId(e.target.value)}
           fullWidth
           margin="normal"
         />

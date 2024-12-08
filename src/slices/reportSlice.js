@@ -1,21 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getSubdomainConfig } from '../utils/subdomain';
+import { getStoreConfig } from '../utils/subdomain';
 import axiosInstance from '../utils/axiosInstance';
 
 export const createTemplate = createAsyncThunk('report/template', async (templateData) => {
-  const config = getSubdomainConfig();
+  const config = getStoreConfig();
   const response = await axiosInstance.post('/report/template', templateData, config);
   return response.data;
 });
 
 export const fetchTemplates = createAsyncThunk('report/fetchTemplates', async (id) => {
-  const config = getSubdomainConfig();
+  const config = getStoreConfig();
   const response = await axiosInstance.get(`/report/templates`, config);
   return response.data;
 });
 
 export const downloadReport = createAsyncThunk('report/download', async (reportData) => {
-  const config = getSubdomainConfig();
+  const config = getStoreConfig();
   const response = await axiosInstance.get(`report/${reportData.reportType}/${reportData.format}`, { ...reportData, ...config });
   return response.data;
 });
