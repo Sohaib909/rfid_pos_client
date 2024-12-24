@@ -50,8 +50,8 @@ const authSlice = createSlice({
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.user = action.payload;
-        localStorage.setItem('user', JSON.stringify(action.payload));
+        // state.user = action.payload;
+        // localStorage.setItem('user', JSON.stringify(action.payload));
         
         // Redirect to the user's subdomain after signup
         // const subdomain = action.payload.stores && action.payload.stores.length > 0

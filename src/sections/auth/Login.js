@@ -10,14 +10,20 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 const Login = () => {
   const [storeId, setStoreId] = useState('');
-  const [employeeId, setEmployeeId] = useState('');
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [ownerLogin, setOwnerLogin] = useState('');
   const dispatch = useDispatch();
   const { user, status, error } = useSelector((state) => state.auth);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(login({storeId, employeeId, password }));
+    dispatch(login({storeId, userName, password, isOwner: ownerLogin}));
+  };
+
+  const handleToggleLogin = (e) => {
+    e.preventDefault();
+    setOwnerLogin(!ownerLogin)
   };
 
   if (user) {
@@ -28,7 +34,17 @@ const Login = () => {
     <Container maxWidth="xs">
       <form onSubmit={handleSubmit}>
         <Typography variant="h4">Login</Typography>
-        <TextField
+        {ownerLogin ? (<TextField
+          label="Email"
+          type="email"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          fullWidth
+          margin="normal"
+          fullWidth
+          margin="normal"
+        />): 
+        (<div><TextField
           label="Store ID"
           type="text"
           value={storeId}
@@ -39,11 +55,12 @@ const Login = () => {
         <TextField
           label="Employee ID"
           type="text"
-          value={employeeId}
-          onChange={(e) => setEmployeeId(e.target.value)}
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
           fullWidth
           margin="normal"
-        />
+        /></div>)
+      }
         <TextField
           label="Password"
           type="password"
@@ -57,6 +74,8 @@ const Login = () => {
         </Button>
         {error && <Typography color="error">{error}</Typography>}
       </form>
+
+      <Button onClick={handleToggleLogin}>{ownerLogin ? "Sign in as Employee" : "Sign in as Owner"}</Button>
     </Container>
   );
 };

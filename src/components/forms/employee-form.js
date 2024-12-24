@@ -23,7 +23,6 @@ export default function EmployeeForm({
       ...formData,
       [name]: value,
     });
-    console.log(formData)
   };
 
   return (
@@ -32,7 +31,7 @@ export default function EmployeeForm({
       <Tabs value={step} onChange={(e, newValue) => setStep(newValue)}>
         <Tab label="Personal Information" />
         <Tab label="Professional Information" />
-        <Tab label="Account Access" />
+        {formType != 'Update' && (<Tab label="Account Access" />)}
       </Tabs>
       <form onSubmit={handleSubmit}>
         {step === 0 && (
@@ -212,7 +211,7 @@ export default function EmployeeForm({
             </Grid>
           </Box>
         )}
-        {step === 2 && (
+        {step === 2 && formType != 'Update' && (
           <Box className="form-step">
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -251,16 +250,22 @@ export default function EmployeeForm({
           {step > 0 && (
             <Button
               variant="contained"
-              onClick={() => setStep(step - 1)}
+              onClick={(e) => {
+                e.preventDefault(); // Prevent form submission
+                setStep(step - 1);
+              }}
             >
               Back
             </Button>
           )}
-          {step < 2 ? (
+          {step < (formType == 'Update' ? 1 : 2) ? (
             <Button
               variant="contained"
               color="primary"
-              onClick={() => setStep(step + 1)}
+              onClick={(e) => {
+                e.preventDefault(); // Prevent form submission
+                setStep(step + 1);
+              }}
             >
               Next
             </Button>
