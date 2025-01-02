@@ -69,7 +69,6 @@ export default function EmployeeForm({
                 <TextField
                   variant="outlined"
                   margin="normal"
-                  required
                   fullWidth
                   id="mobileNumber"
                   label="Mobile Number"
@@ -97,7 +96,6 @@ export default function EmployeeForm({
                 <TextField
                   variant="outlined"
                   margin="normal"
-                  required
                   fullWidth
                   id="dateOfBirth"
                   label="Date of Birth"
@@ -112,7 +110,6 @@ export default function EmployeeForm({
                 <TextField
                   variant="outlined"
                   margin="normal"
-                  required
                   fullWidth
                   id="gender"
                   label="Gender"
@@ -132,7 +129,6 @@ export default function EmployeeForm({
                 <TextField
                   variant="outlined"
                   margin="normal"
-                  required
                   fullWidth
                   id="maritalStatus"
                   label="Marital Status"
@@ -153,7 +149,6 @@ export default function EmployeeForm({
                 <TextField
                   variant="outlined"
                   margin="normal"
-                  required
                   fullWidth
                   id="nationality"
                   label="Nationality"

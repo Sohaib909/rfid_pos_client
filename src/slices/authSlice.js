@@ -50,6 +50,7 @@ const authSlice = createSlice({
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.status = 'succeeded';
+        window.location.pathname = "login"
         // state.user = action.payload;
         // localStorage.setItem('user', JSON.stringify(action.payload));
         

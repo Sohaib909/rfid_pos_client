@@ -32,7 +32,7 @@ const navConfig = (role) => {
 
   switch (role) {
     case 'Admin':
-      return allConfig.filter((item) => !['dashboard', 'Reporting'].includes(item.title));
+      return allConfig.filter((item) => !['dashboard'].includes(item.title));
     case 'Manager':
       return allConfig.filter((item) => !['dashboard', 'Reporting'].includes(item.title));
     case 'Sales Assistant':
