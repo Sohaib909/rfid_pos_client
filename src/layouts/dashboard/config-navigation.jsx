@@ -34,7 +34,7 @@ const navConfig = (role) => {
     case 'Admin':
       return allConfig.filter((item) => !['dashboard'].includes(item.title));
     case 'Manager':
-      return allConfig.filter((item) => !['dashboard', 'Reporting'].includes(item.title));
+      return allConfig.filter((item) => !['dashboard'].includes(item.title));
     case 'Sales Assistant':
       return allConfig.filter((item) => item.title === 'dashboard')
     default:

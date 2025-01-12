@@ -23,16 +23,20 @@ import MTableHead from '../../components/table/table-head';
 import TableEmptyRows from '../../components/table/table-empty-rows';
 import MTableToolbar from '../../components/table/table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../../components/table/utils';
+import { roles } from '../../utils/roles';
 
 
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const employees = useSelector((state) => state.employee.employees);
+  const { user } = useSelector((state) => state.auth);
   const status = useSelector((state) => state.employee.status);
   const error = useSelector((state) => state.employee.error);
   const [searchTerm, setSearchTerm] = useState('');
   const history = useRouter();
+  const userRole = user.role;
+  const userRoles = roles;
 
   useEffect(() => {
     dispatch(fetchEmployees());
@@ -181,6 +185,8 @@ const EmployeeList = () => {
                     updateData={() => handleUpdateEmployee(row.id)}
                     handleClick= {(event) => handleClick(event, row.name)}
                     removeData={() => removeEmployee(row.id)}
+                    canEdit={roles[userRole]?.includes('edit_employees')}
+                    canDelete={roles[userRole]?.includes('delete_employees')}
                   />
                 ))
               }

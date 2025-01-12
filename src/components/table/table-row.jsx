@@ -11,8 +11,6 @@ import IconButton from '@mui/material/IconButton';
 import { AddCircle, RemoveCircle, DeleteRounded, Edit } from '@mui/icons-material';
 
 import ImageModal from '../modal/ImageModal';
-
-
 // ----------------------------------------------------------------------
 
 export default function MTableRow({
@@ -22,7 +20,9 @@ export default function MTableRow({
   isSalesDashboard = false,
   handleQuantityChange,
   updateData,
-  removeData
+  removeData,
+  canEdit = true,
+  canDelete = true
 }) {
   const [openImageModal, setOpenImageModal] = useState(false);
   const [modalImage, setModalImage] = useState('');
@@ -85,17 +85,19 @@ export default function MTableRow({
           )
         ))}
         <TableCell style={{ textAlign: 'center'}} >
-          { !isSalesDashboard ? (
+          { !isSalesDashboard && canEdit ? (
             <IconButton onClick={updateData}>
               <Edit />
             </IconButton>
           ) : null}
-          <IconButton 
-            style={{ color: 'red'}} 
-            onClick={removeData}
-          >
-            <DeleteRounded />
-          </IconButton>
+          { canDelete ?
+           (<IconButton 
+              style={{ color: 'red'}} 
+              onClick={removeData}
+            >
+              <DeleteRounded />
+            </IconButton>) : null
+          }
         </TableCell>
       </TableRow>
       <ImageModal
@@ -119,5 +121,7 @@ MTableRow.propTypes = {
   isSalesDashboard: PropTypes.bool,
   handleQuantityChange: PropTypes.func,
   updateData: PropTypes.func,
-  removeData: PropTypes.func
+  removeData: PropTypes.func,
+  canEdit: PropTypes.bool,
+  canDelete: PropTypes.bool,
 };

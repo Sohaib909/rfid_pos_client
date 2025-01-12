@@ -23,6 +23,7 @@ import MTableHead from '../../components/table/table-head';
 import TableEmptyRows from '../../components/table/table-empty-rows';
 import MTableToolbar from '../../components/table/table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../../components/table/utils';
+import { roles } from '../../utils/roles';
 
 
 
@@ -33,6 +34,9 @@ const ProductList = () => {
   const error = useSelector((state) => state.product.error);
   const [searchTerm, setSearchTerm] = useState('');
   const history = useRouter();
+  const { user } = useSelector((state) => state.auth);
+  const userRole = user.role;
+  const userRoles = roles;
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -177,6 +181,8 @@ const ProductList = () => {
                     handleClick={(event) => handleClick(event, row.name)}
                     updateData={() => handleUpdateProduct(row.id)}
                     removeData={() => removeProduct(row.id)}
+                    canEdit={roles[userRole]?.includes('edit_products')}
+                    canDelete={roles[userRole]?.includes('delete_products')}
                   />
                 ))
               }

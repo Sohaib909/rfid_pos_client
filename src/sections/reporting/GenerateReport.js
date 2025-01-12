@@ -29,6 +29,7 @@ import './style/GenerateReport.css';
 import { createTemplate, fetchTemplates, downloadReport } from '../../slices/reportSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import axiosInstance from '../../utils/axiosInstance';
+import DatePicker from '../../utils/datePicker';
 
 const GenerateReport = () => {
   const [format, setFormat] = useState('csv');
@@ -42,6 +43,8 @@ const GenerateReport = () => {
   const [module, setModule] = useState('');
   const [dateFilter, setDateFilter] = useState("7");
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [dailyReport, setDailyReport] = useState(false);
 
   // const [templates, setTemplates] = useState([]);
   const templates = useSelector((state) => state.report.templates);
@@ -74,9 +77,12 @@ const GenerateReport = () => {
 
     try {
       const data = {
-        params: { columns: selectedColumns.join(','),
-        dateFilter,
-        productSkus: selectedProducts.map(product => product.sku).join(',') },
+        params: { 
+          columns: selectedColumns.join(','),
+          dateFilter,
+          productSkus: selectedProducts.map(product => product.sku).join(','),
+          selectedDate: selectedDate
+        },
         responseType: 'blob',
         reportType,
         format
@@ -125,6 +131,13 @@ const GenerateReport = () => {
     setAnchorEl(null);
     setReportType('');
   };
+
+  const handleDailyReportChange = (date) => {
+    const timeZoneOffset = date.getTimezoneOffset()
+    date.setMinutes(Math.abs(timeZoneOffset))
+    setSelectedDate(date)
+    setDailyReport(false)
+  }
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-menu' : undefined;
@@ -185,6 +198,13 @@ const GenerateReport = () => {
     setName("");
   };
 
+  const handleDateFilterChange = (event) => {
+    const value = event.target.value;
+    setDateFilter(value);
+    setSelectedDate(null);
+    setDailyReport(value == "Daily Reports")
+  }
+
   return (
     <Container className="generate-report-container">
       <Typography variant="h4">Reporting</Typography>
@@ -200,13 +220,14 @@ const GenerateReport = () => {
             <InputLabel>Duration</InputLabel>
             <Select
               value={dateFilter} // Controlled value
-              onChange={(e) => setDateFilter(e.target.value)}
+              onChange={(e) => handleDateFilterChange(e)}
               label="Duration"
               sx={{ height: '40px' }} // Adjust height to match the button
             >
               <MenuItem value="7">7 Days</MenuItem>
               <MenuItem value="15">15 Days</MenuItem>
               <MenuItem value="30">30 Days</MenuItem>
+              <MenuItem value="Daily Reports">Daily Reports</MenuItem>
             </Select>
           </FormControl>
 
@@ -215,6 +236,22 @@ const GenerateReport = () => {
           </Button>
         </Box>
       </Box>
+
+      {dailyReport && (
+        <Box mb={3}>
+          <Typography variant="h6">Select Date for Daily Report</Typography>
+          <DatePicker onDateChange={handleDailyReportChange} date={selectedDate}/>
+        </Box>
+      )}
+
+      {selectedDate && (
+        <div>
+        <Typography variant="body1" mt={2}>
+          Selected Date: {selectedDate.toLocaleDateString()}
+        </Typography>
+        <Button onClick={() => setDailyReport(true)}>Change Date</Button>
+        </div>
+      )}
       
       <Collapse in={openTemplates} timeout="auto" unmountOnExit>
         <TableContainer component={Paper} className="templates-table-container">

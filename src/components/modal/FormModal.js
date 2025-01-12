@@ -42,6 +42,7 @@ const FormModal = ({
   addProduct
 }) => {
   const [productList, setProductList] = useState(selectedProducts || []);
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     setProductList(selectedProducts); // Sync with selectedProducts from parent
@@ -65,6 +66,17 @@ const FormModal = ({
         : [...prevSelected, value]
     );
   };
+
+  const handleSelectAllClick = (event) => {
+    const checked = event.target.checked;
+    setSelectAll(checked)
+    if(checked){
+      setSelectedColumns(columns.map((column) => column.original));
+    }else{
+      setSelectedColumns([]);
+    }
+    
+  }
 
   const handleAddProduct = (product) => {
     if (product && !productList.some((p) => p.sku === product.sku)) { // Ensure the product is not already in the list
@@ -150,6 +162,18 @@ const FormModal = ({
         </FormControl>
         <FormControl component="fieldset" fullWidth margin="normal">
           <FormGroup>
+            {columns.length > 0 && (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={selectAll}
+                    onChange={handleSelectAllClick}
+                    name="Select All"
+                  />
+                }
+                label="Select All"
+              />
+            )}
             {columns.map((column) => (
               <FormControlLabel
                 key={column.original}
