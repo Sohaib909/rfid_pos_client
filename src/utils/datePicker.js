@@ -12,7 +12,6 @@ const DatePicker = ({onDateChange, date=null}) => {
 
   return (
     <div style={{ margin: '20px' }}>
-      <h3>Select a Date</h3>
       <DayPicker
         mode="single"
         selected={selectedDate}

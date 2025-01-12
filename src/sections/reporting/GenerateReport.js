@@ -133,9 +133,11 @@ const GenerateReport = () => {
   };
 
   const handleDailyReportChange = (date) => {
-    const timeZoneOffset = date.getTimezoneOffset()
-    date.setMinutes(Math.abs(timeZoneOffset))
-    setSelectedDate(date)
+    if(date){
+      const timeZoneOffset = date.getTimezoneOffset()
+      date.setMinutes(Math.abs(timeZoneOffset))
+      setSelectedDate(date)
+    }
     setDailyReport(false)
   }
 
