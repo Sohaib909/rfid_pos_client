@@ -172,9 +172,9 @@ const ProductList = () => {
         <Typography variant="h4">Products</Typography>
         <div>
           <Button
-            mb={5}
+            sx={{ marginRight: 1 }}
             variant="contained"
-            color="secondary"
+            color="primary"
             component="label"
             startIcon={<FileUploadIcon />}
           >
