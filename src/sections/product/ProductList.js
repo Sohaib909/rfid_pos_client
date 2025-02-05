@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts, deleteProduct } from '../../slices/productSlice';
+import { fetchProducts, deleteProduct, bulkUploadProducts } from '../../slices/productSlice';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -24,6 +24,9 @@ import TableEmptyRows from '../../components/table/table-empty-rows';
 import MTableToolbar from '../../components/table/table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../../components/table/utils';
 import { roles } from '../../utils/roles';
+import { read, utils } from 'xlsx';
+import Papa from 'papaparse';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 
 
@@ -32,9 +35,13 @@ const ProductList = () => {
   const products = useSelector((state) => state.product.products);
   const status = useSelector((state) => state.product.status);
   const error = useSelector((state) => state.product.error);
-  const [searchTerm, setSearchTerm] = useState('');
   const history = useRouter();
   const { user } = useSelector((state) => state.auth);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [file, setFile] = useState(null); // File input state
+  const [uploadError, setUploadError] = useState('');
+
   const userRole = user.role;
   const userRoles = roles;
 
@@ -112,6 +119,39 @@ const ProductList = () => {
     setFilterName(event.target.value);
   };
 
+
+  const handleFileUpload = async (event) => {
+    const uploadedFile = event.target.files[0];
+    if (!uploadedFile) return;
+
+    const fileType = uploadedFile.type;
+
+    try {
+      let parsedData = [];
+      if (fileType === 'text/csv' || fileType === 'application/vnd.ms-excel') {
+        // Parse CSV file
+        const text = await uploadedFile.text();
+        parsedData = Papa.parse(text, { header: true }).data;
+      } else if (fileType.includes('spreadsheetml') || fileType.includes('excel')) {
+        // Parse Excel file
+        const buffer = await uploadedFile.arrayBuffer();
+        const workbook = read(buffer, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        parsedData = utils.sheet_to_json(sheet);
+      } else {
+        throw new Error('Unsupported file type');
+      }
+
+      // Dispatch bulk upload action
+      dispatch(bulkUploadProducts(parsedData));
+      setFile(null); // Clear file input
+    } catch (error) {
+      console.error(error);
+      setUploadError('Failed to parse file. Please ensure it is a valid CSV or Excel file.');
+    }
+  };
+
   const dataFiltered = applyFilter({
     inputData: products,
     comparator: getComparator(order, orderBy),
@@ -130,10 +170,28 @@ const ProductList = () => {
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Products</Typography>
+        <div>
+          <Button
+            mb={5}
+            variant="contained"
+            color="secondary"
+            component="label"
+            startIcon={<FileUploadIcon />}
+          >
+            Bulk Upload Products
+            <input
+              hidden
+              type="file"
+              accept=".xlsx, .xls"
+              onChange={handleFileUpload}
+            />
+          </Button>
+        
 
-        <Button variant="contained" color="primary" onClick={handleNewProduct} startIcon={<Iconify icon="eva:plus-fill" />}>
-          New Product
-        </Button>
+          <Button variant="contained" color="primary" onClick={handleNewProduct} startIcon={<Iconify icon="eva:plus-fill" />}>
+            New Product
+          </Button>
+        </div>
       </Stack>
 
       <Card>

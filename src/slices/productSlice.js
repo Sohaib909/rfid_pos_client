@@ -39,6 +39,12 @@ export const searchProducts = createAsyncThunk('product/searchProducts', async (
   return response.data;
 });
 
+export const bulkUploadProducts = createAsyncThunk('product/bulkUploadProducts', async (productData) => {
+  const config = getStoreConfig();
+  const response = await axiosInstance.post('/product/bulk-upload-products', productData, config);
+  return response.data;
+});
+
 const productSlice = createSlice({
   name: 'product',
   initialState: {
@@ -110,6 +116,13 @@ const productSlice = createSlice({
       })
       .addCase(searchProducts.rejected, (state, action) => {
         state.status = 'failed';
+      })
+      .addCase(bulkUploadProducts.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(bulkUploadProducts.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        window.location.pathname = "products"
       });
   },
 });
