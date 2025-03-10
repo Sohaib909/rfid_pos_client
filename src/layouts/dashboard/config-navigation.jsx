@@ -14,6 +14,11 @@ const navConfig = (role) => {
       icon: icon('ic_analytics'),
     },
     {
+      title: 'sales',
+      path: '/',
+      icon: icon('ic_user'),
+    },
+    {
       title: 'Employees',
       path: '/employees',
       icon: icon('ic_user'),
@@ -32,7 +37,7 @@ const navConfig = (role) => {
 
   switch (role) {
     case 'Admin':
-      return allConfig.filter((item) => !['dashboard'].includes(item.title));
+      return allConfig.filter((item) => !['dashboard', 'sales'].includes(item.title));
     case 'Manager':
       return allConfig.filter((item) => !['dashboard'].includes(item.title));
     case 'Sales Assistant':

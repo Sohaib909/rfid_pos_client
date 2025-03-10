@@ -15,7 +15,7 @@ const Dashboard = () => {
     case 'Admin':
       return <Employees />;
     case 'Manager':
-      return <Employees />;
+      return <SalesDashboard />;
     case 'Sales Assistant':
       return <SalesDashboard />;
     default:
