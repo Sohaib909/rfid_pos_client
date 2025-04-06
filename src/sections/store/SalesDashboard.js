@@ -52,11 +52,22 @@ const SalesDashboard = () => {
   const handleQuantityChange = (sku, delta) => {
     setFormData({
       ...formData,
-      items: formData.items.map(item =>
-        item.sku === sku ? { ...item, quantity: Math.max(0, item.quantity + delta) } : item
-      )
+      items: formData.items
+        .map(item => {
+          if (item.sku !== sku) return item;
+
+          const newQuantity = item.quantity + delta;
+
+          if (newQuantity < 1 || newQuantity > item.maxQuantity) {
+            return item;
+          }
+
+          return { ...item, quantity: newQuantity };
+        })
+        .filter(item => item.quantity > 0)
     });
   };
+
 
   const subTotalAmount = () => {
     return formData.items.reduce((total, item) => total + item.quantity * item.price, 0);
