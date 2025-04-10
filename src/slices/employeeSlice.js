@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getStoreConfig } from '../utils/subdomain';
 import axiosInstance from '../utils/axiosInstance';
 
-export const createEmployee = createAsyncThunk('employee/addEmployee', async (employeeData) => {
+export const createEmployee = createAsyncThunk('employee/addEmployee', async (employeeData, { rejectWithValue }) => {
+  try {
   const config = getStoreConfig();
   const formData = new FormData();
   for (const key in employeeData) {
@@ -10,6 +11,14 @@ export const createEmployee = createAsyncThunk('employee/addEmployee', async (em
   }
   const response = await axiosInstance.post('/employee', formData, config);
   return response.data;
+  } catch (err) {
+    if (err.response && err.response.data && err.response.data.message) {
+      return rejectWithValue(err.response.data.message);
+    }
+
+    // Fallback to default error message
+    return rejectWithValue(err.message || 'An unexpected error occurred');
+  }
 });
 
 export const fetchEmployees = createAsyncThunk('employee/fetchEmployees', async () => {
@@ -55,7 +64,7 @@ const employeeSlice = createSlice({
       })
       .addCase(createEmployee.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(fetchEmployees.pending, (state) => {
         state.status = 'loading';

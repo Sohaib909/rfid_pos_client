@@ -223,6 +223,11 @@ export default function EmployeeForm({
                   disabled
                   onChange={handleChange}
                 />
+                {status === 'failed' && (
+                  <div style={{ color: 'red', marginBottom: '1rem' }}>
+                    {error}
+                  </div>
+                )}
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField

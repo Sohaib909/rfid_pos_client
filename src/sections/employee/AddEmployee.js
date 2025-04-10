@@ -22,8 +22,8 @@ const AddEmployee = () => {
   });
 
   const dispatch = useDispatch();
-  const status = useSelector((state) => state.product.status);
-  const error = useSelector((state) => state.product.error);
+  const status = useSelector((state) => state.employee.status);
+  const error = useSelector((state) => state.employee.error);
   const history = useRouter();
 
   const handleSubmit = (e) => {
