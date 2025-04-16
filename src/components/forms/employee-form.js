@@ -31,7 +31,7 @@ export default function EmployeeForm({
       <Tabs value={step} onChange={(e, newValue) => setStep(newValue)}>
         <Tab label="Personal Information" />
         <Tab label="Professional Information" />
-        {formType != 'Update' && (<Tab label="Account Access" />)}
+        <Tab label="Account Access" />)
       </Tabs>
       <form onSubmit={handleSubmit}>
         {step === 0 && (
@@ -206,7 +206,7 @@ export default function EmployeeForm({
             </Grid>
           </Box>
         )}
-        {step === 2 && formType != 'Update' && (
+        {step === 2 && (
           <Box className="form-step">
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -258,7 +258,7 @@ export default function EmployeeForm({
               Back
             </Button>
           )}
-          {step < (formType == 'Update' ? 1 : 2) ? (
+          {step < (formType == 'Update' ? 2 : 2) ? (
             <Button
               variant="contained"
               color="primary"
