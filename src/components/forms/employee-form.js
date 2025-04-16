@@ -11,6 +11,7 @@ export default function EmployeeForm({
   handleSubmit
 }) {
   const [step, setStep] = useState(0);
+  const [updatePassword, setUpdatePassword] = useState(false);
 
   const handleStepChange = (e, delta) => {
     e.preventDefault();
@@ -25,6 +26,15 @@ export default function EmployeeForm({
     });
   };
 
+  const submitForm = (e) => {
+    e.preventDefault();
+    if (formType == "Update" && !updatePassword) {
+      delete formData.password;
+    }
+    handleSubmit(e)
+  };
+
+
   return (
     <Container className="add-employee-container">
       <Typography variant="h4">{formType} Employee </Typography>
@@ -33,7 +43,7 @@ export default function EmployeeForm({
         <Tab label="Professional Information" />
         <Tab label="Account Access" />)
       </Tabs>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={submitForm}>
         {step === 0 && (
           <Box className="form-step">
             <Grid container spacing={2}>
@@ -229,7 +239,26 @@ export default function EmployeeForm({
                   </div>
                 )}
               </Grid>
-              <Grid item xs={12} sm={6}>
+              {formType == 'Update' && !updatePassword ? (<Button
+                variant=""
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent form submission
+                  setUpdatePassword(true);
+                }}
+              >
+                Update Password
+              </Button>) : formType == 'Update' ? (<Button
+                variant=""
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent form submission
+                  setUpdatePassword(false);
+                }}
+              >
+                Hide Password
+              </Button>) : "" 
+              
+              }
+              {(formType != 'Update' || updatePassword) &&(<Grid item xs={12} sm={6}>
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -242,7 +271,7 @@ export default function EmployeeForm({
                   value={formData.password}
                   onChange={handleChange}
                 />
-              </Grid>
+              </Grid>)}
             </Grid>
           </Box>
         )}
