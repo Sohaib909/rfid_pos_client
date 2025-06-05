@@ -41,8 +41,6 @@ const Login = () => {
           onChange={(e) => setUserName(e.target.value)}
           fullWidth
           margin="normal"
-          fullWidth
-          margin="normal"
         />): 
         (<div><TextField
           label="Store ID"

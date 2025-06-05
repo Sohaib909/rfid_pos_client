@@ -229,6 +229,7 @@ const GenerateReport = () => {
               <MenuItem value="7">7 Days</MenuItem>
               <MenuItem value="15">15 Days</MenuItem>
               <MenuItem value="30">30 Days</MenuItem>
+              <MenuItem value="Current">Current</MenuItem>
               <MenuItem value="Daily Reports">Daily Reports</MenuItem>
             </Select>
           </FormControl>
