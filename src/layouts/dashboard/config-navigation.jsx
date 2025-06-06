@@ -32,6 +32,11 @@ const navConfig = (role) => {
       title: 'Reporting',
       path: '/reporting',
       icon: icon('ic_analytics'),
+    },
+    {
+      title: 'Login Reports',
+      path: '/login-reports',
+      icon: icon('ic_analytics'),
     }
   ];
 

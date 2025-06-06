@@ -3,6 +3,7 @@ import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 import RequireAuth from '../sections/auth/RequireAuth';
 
 import DashboardLayout from '../layouts/dashboard';
+import LoginReports from '../sections/reports/LoginReports.jsx';
 export const Login = lazy(()=> import('../sections/auth/Login'));
 export const Signup = lazy(()=> import('../sections/auth/Signup'));
 export const Dashboard = lazy(()=> import('../sections/store/index.js'));
@@ -39,6 +40,7 @@ export default function Router() {
         { path: 'products/:id', element: <RequireAuth><UpdateProduct /></RequireAuth> },
         { path: 'employees/new', element: <RequireAuth><AddEmployee /></RequireAuth> },
         { path: 'reporting', element: <RequireAuth><GenerateReport /></RequireAuth> },
+        { path: 'login-reports', element: <RequireAuth><LoginReports /></RequireAuth> },
       ],
     },
     {
