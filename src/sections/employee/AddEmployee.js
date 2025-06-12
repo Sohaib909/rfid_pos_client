@@ -4,7 +4,7 @@ import { createEmployee } from '../../slices/employeeSlice';
 import './style/AddEmployee.css';
 import { useRouter } from '../../routes/hooks';
 import EmployeeForm from '../../components/forms/employee-form';
-
+import { Alert } from '@mui/material';
 
 const AddEmployee = () => {
   const [formData, setFormData] = useState({
@@ -29,32 +29,49 @@ const AddEmployee = () => {
   const currentStore = useSelector((state) => state.store.currentStore);
 
   useEffect(() => {
-    console.log('Current store in Redux (AddEmployee):', currentStore);
+    if (!currentStore || !currentStore._id) {
+      setStoreError('Please select a store before adding an employee.');
+    } else {
+      setStoreError('');
+    }
   }, [currentStore]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!currentStore || !currentStore._id) {
       setStoreError('Please select a store before adding an employee.');
       return;
     }
     setStoreError('');
-    dispatch(createEmployee(formData)).then((result) => {
-      if (result.meta.requestStatus === 'fulfilled') {
+    
+    try {
+      const resultAction = await dispatch(createEmployee(formData));
+      if (createEmployee.fulfilled.match(resultAction)) {
         history.push('/employees');
+      } else if (createEmployee.rejected.match(resultAction)) {
+        setStoreError(resultAction.payload || 'Failed to create employee');
       }
-    });
+    } catch (err) {
+      setStoreError('An unexpected error occurred');
+    }
   };
 
   return (
-    <EmployeeForm
-      formData={formData}
-      setFormData={setFormData}
-      status={status}
-      error={storeError || error}
-      formType="Create"
-      handleSubmit={(event) => handleSubmit(event)}
-    />
+    <>
+      {storeError && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {storeError}
+        </Alert>
+      )}
+      <EmployeeForm
+        formData={formData}
+        setFormData={setFormData}
+        status={status}
+        error={error}
+        formType="Create"
+        handleSubmit={handleSubmit}
+      />
+    </>
   );
 };
 

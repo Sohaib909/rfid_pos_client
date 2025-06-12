@@ -1,25 +1,50 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getStoreConfig } from '../utils/subdomain';
+import { getStoreConfig, getStoreFormDataConfig } from '../utils/subdomain';
 import axiosInstance from '../utils/axiosInstance';
 
 // Thunk to create a new product
-export const createProduct = createAsyncThunk('product/createProduct', async (productData, { getState }) => {
-  const { currentStore } = getState().store;
-  console.log('Current store in Redux (product):', currentStore);
-  const config = getStoreConfig(currentStore?._id);
-  console.log('Config for createProduct:', config);
-  const response = await axiosInstance.post('/product', productData, config);
-  return response.data;
-});
+export const createProduct = createAsyncThunk(
+  'product/createProduct',
+  async (productData, { getState, rejectWithValue }) => {
+    try {
+      const { currentStore } = getState().store;
+      
+      if (!currentStore?._id) {
+        return rejectWithValue('Please select a store first');
+      }
 
-export const fetchProducts = createAsyncThunk('product/fetchProducts', async (_, { getState }) => {
-  const { currentStore } = getState().store;
-  console.log('Current store in Redux (fetchProducts):', currentStore);
-  const config = getStoreConfig(currentStore?._id);
-  console.log('Config for fetchProducts:', config);
-  const response = await axiosInstance.get('/product', config);
-  return response.data;
-});
+      const config = getStoreConfig(currentStore._id);
+      const dataToSend = {
+        ...productData,
+        store: currentStore._id
+      };
+
+      const response = await axiosInstance.post('/product', dataToSend, config);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || 'Failed to create product');
+    }
+  }
+);
+
+export const fetchProducts = createAsyncThunk(
+  'product/fetchProducts',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { currentStore } = getState().store;
+      
+      if (!currentStore?._id) {
+        return rejectWithValue('Please select a store first');
+      }
+
+      const config = getStoreConfig(currentStore._id);
+      const response = await axiosInstance.get('/product', config);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch products');
+    }
+  }
+);
 
 export const deleteProduct = createAsyncThunk('product/deleteProduct', async (id) => {
   const config = getStoreConfig();

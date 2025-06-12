@@ -1,25 +1,27 @@
 // utils/subdomain.js
 import store from '../store';
 
-export function getStoreConfig(storeId) {
-  // Try Redux first
-  const state = store.getState();
-  let reduxStoreId = state.store?.currentStore?._id;
-  if (!storeId && reduxStoreId) {
-    storeId = reduxStoreId;
-  }
-  // Fallback to localStorage user.stores[0]
+export const getStoreConfig = (storeId) => {
   if (!storeId) {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.stores && user.stores.length > 0) {
-      storeId = user.stores[0]._id || user.stores[0];
-    } else if (user && user.store) {
-      storeId = user.store.storeId || user.store._id;
-    }
+    throw new Error('Store ID is required');
   }
+
   return {
     headers: {
-      'X-StoreId': storeId,
-    },
+      'X-Store-Id': storeId,
+      'Content-Type': 'application/json'
+    }
   };
-}
+};
+
+export const getStoreFormDataConfig = (storeId) => {
+  if (!storeId) {
+    throw new Error('Store ID is required');
+  }
+
+  return {
+    headers: {
+      'X-Store-Id': storeId
+    }
+  };
+};

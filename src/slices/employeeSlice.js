@@ -1,35 +1,54 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getStoreConfig } from '../utils/subdomain';
+import { getStoreConfig, getStoreFormDataConfig } from '../utils/subdomain';
 import axiosInstance from '../utils/axiosInstance';
 
-export const createEmployee = createAsyncThunk('employee/addEmployee', async (employeeData, { getState, rejectWithValue }) => {
-  try {
-    const state = getState();
-    const currentStore = state.store?.currentStore;
-    console.log('Current store in Redux:', currentStore);
-    const config = getStoreConfig(currentStore?._id);
-    console.log('Config for createEmployee:', config);
-    const formData = new FormData();
-    for (const key in employeeData) {
-      formData.append(key, employeeData[key]);
-    }
-    const response = await axiosInstance.post('/employee', formData, config);
-    return response.data;
-  } catch (err) {
-    if (err.response && err.response.data && err.response.data.message) {
-      return rejectWithValue(err.response.data.message);
-    }
+export const createEmployee = createAsyncThunk(
+  'employee/addEmployee',
+  async (employeeData, { getState, rejectWithValue }) => {
+    try {
+      const { currentStore } = getState().store;
+      
+      if (!currentStore?._id) {
+        return rejectWithValue('Please select a store first');
+      }
 
-    // Fallback to default error message
-    return rejectWithValue(err.message || 'An unexpected error occurred');
+      const config = getStoreFormDataConfig(currentStore._id);
+      const formData = new FormData();
+      
+      // Add employee data to FormData
+      for (const key in employeeData) {
+        formData.append(key, employeeData[key]);
+      }
+      
+      // Add store ID
+      formData.append('store', currentStore._id);
+
+      const response = await axiosInstance.post('/employee', formData, config);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || 'Failed to create employee');
+    }
   }
-});
+);
 
-export const fetchEmployees = createAsyncThunk('employee/fetchEmployees', async () => {
-  const config = getStoreConfig();
-  const response = await axiosInstance.get('/employee', config);
-  return response.data;
-});
+export const fetchEmployees = createAsyncThunk(
+  'employee/fetchEmployees',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { currentStore } = getState().store;
+      
+      if (!currentStore?._id) {
+        return rejectWithValue('Please select a store first');
+      }
+
+      const config = getStoreConfig(currentStore._id);
+      const response = await axiosInstance.get('/employee', config);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch employees');
+    }
+  }
+);
 
 export const deleteEmployee = createAsyncThunk('employee/deleteEmployee', async (id) => {
   const config = getStoreConfig();
