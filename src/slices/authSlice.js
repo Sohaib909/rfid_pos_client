@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../utils/axiosInstance';
-import { setStore } from './storeSlice';
+import { setCurrentStore } from './storeSlice';
 import { getStoreConfig } from '../utils/subdomain';
 
 export const signup = createAsyncThunk('auth/signup', async (data) => {
@@ -16,7 +16,9 @@ export const login = createAsyncThunk(
       const response = await axiosInstance.post('/auth/login', credentials, config);
       const user = response.data;
 
-      dispatch(setStore(user.store));
+      if (user.stores && user.stores.length > 0) {
+        dispatch(setCurrentStore(user.stores[0]));
+      }
 
       return user;
     } catch (error) {
@@ -73,6 +75,10 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.user = action.payload;
+        // Save stores array for fallback in getStoreConfig
+        if (action.payload && action.payload.stores) {
+          localStorage.setItem('stores', JSON.stringify(action.payload.stores));
+        }
         localStorage.setItem('user', JSON.stringify(action.payload));
         console.log("action.payload === =", action.payload);
       })

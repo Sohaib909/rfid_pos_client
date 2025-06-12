@@ -13,12 +13,17 @@ export const createStore = createAsyncThunk('store/createStore', async (storeDat
   return response.data;
 });
 
+export const selectStore = createAsyncThunk('store/selectStore', async (storeId, { getState }) => {
+  const { stores } = getState().store;
+  return stores.find(store => store._id === storeId);
+});
+
 const storeSlice = createSlice({
   name: 'store',
-  initialState: { stores: [], status: 'idle', error: null },
+  initialState: { stores: [], currentStore: null, status: 'idle', error: null },
   reducers: {
-    setStore: (state, action) => {
-      state.store = action.payload;
+    setCurrentStore: (state, action) => {
+      state.currentStore = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -29,6 +34,9 @@ const storeSlice = createSlice({
       .addCase(fetchStores.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.stores = action.payload;
+        if (!state.currentStore && action.payload && action.payload.length === 1) {
+          state.currentStore = action.payload[0];
+        }
       })
       .addCase(fetchStores.rejected, (state, action) => {
         state.status = 'failed';
@@ -44,9 +52,12 @@ const storeSlice = createSlice({
       .addCase(createStore.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(selectStore.fulfilled, (state, action) => {
+        state.currentStore = action.payload;
       });
   },
 });
 
-export const { setStore } = storeSlice.actions;
+export const { setCurrentStore } = storeSlice.actions;
 export default storeSlice.reducer;

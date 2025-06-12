@@ -37,6 +37,7 @@ const ProductList = () => {
   const error = useSelector((state) => state.product.error);
   const history = useRouter();
   const { user } = useSelector((state) => state.auth);
+  const currentStore = useSelector((state) => state.store.currentStore);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [file, setFile] = useState(null); // File input state
@@ -46,8 +47,10 @@ const ProductList = () => {
   const userRoles = roles;
 
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    if (currentStore) {
+      dispatch(fetchProducts());
+    }
+  }, [dispatch, currentStore]);
 
 
   const handleNewProduct = () => {
@@ -169,7 +172,9 @@ const ProductList = () => {
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Products</Typography>
+        <Typography variant="h4">
+          Products {currentStore ? `- ${currentStore.name}` : ''}
+        </Typography>
         <div>
           <Button
             sx={{ marginRight: 1 }}
@@ -186,10 +191,21 @@ const ProductList = () => {
               onChange={handleFileUpload}
             />
           </Button>
-        
-
+          {currentStore && currentStore.type !== 'warehouse' && (
+            <Button
+              sx={{ marginRight: 1 }}
+              variant="contained"
+              color="secondary"
+              onClick={() => history.push('/products/transfer')}
+            >
+              Transfer Product
+            </Button>
+          )}
           <Button variant="contained" color="primary" onClick={handleNewProduct} startIcon={<Iconify icon="eva:plus-fill" />}>
             New Product
+          </Button>
+          <Button variant="outlined" color="inherit" sx={{ ml: 1 }} onClick={() => history.push('/')}>
+            Back
           </Button>
         </div>
       </Stack>

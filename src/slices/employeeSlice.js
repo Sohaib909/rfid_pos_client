@@ -2,15 +2,19 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getStoreConfig } from '../utils/subdomain';
 import axiosInstance from '../utils/axiosInstance';
 
-export const createEmployee = createAsyncThunk('employee/addEmployee', async (employeeData, { rejectWithValue }) => {
+export const createEmployee = createAsyncThunk('employee/addEmployee', async (employeeData, { getState, rejectWithValue }) => {
   try {
-  const config = getStoreConfig();
-  const formData = new FormData();
-  for (const key in employeeData) {
-    formData.append(key, employeeData[key]);
-  }
-  const response = await axiosInstance.post('/employee', formData, config);
-  return response.data;
+    const state = getState();
+    const currentStore = state.store?.currentStore;
+    console.log('Current store in Redux:', currentStore);
+    const config = getStoreConfig(currentStore?._id);
+    console.log('Config for createEmployee:', config);
+    const formData = new FormData();
+    for (const key in employeeData) {
+      formData.append(key, employeeData[key]);
+    }
+    const response = await axiosInstance.post('/employee', formData, config);
+    return response.data;
   } catch (err) {
     if (err.response && err.response.data && err.response.data.message) {
       return rejectWithValue(err.response.data.message);

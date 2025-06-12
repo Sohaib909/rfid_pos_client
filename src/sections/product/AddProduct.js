@@ -17,14 +17,21 @@ const AddProduct = () => {
     quantity: '',
     imgUrl: ''
   });
+  const [storeError, setStoreError] = useState('');
 
   const dispatch = useDispatch();
   const status = useSelector((state) => state.product.status);
   const error = useSelector((state) => state.product.error);
   const history = useRouter();
+  const currentStore = useSelector((state) => state.store.currentStore);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!currentStore || !currentStore._id) {
+      setStoreError('Please select a store before adding a product.');
+      return;
+    }
+    setStoreError('');
     dispatch(createProduct(formData)).then((result) => {
       if (result.meta.requestStatus === 'fulfilled') {
         history.push('/products');
@@ -37,7 +44,7 @@ const AddProduct = () => {
       formData={formData}
       setFormData={setFormData}
       status={status}
-      error={error}
+      error={storeError || error}
       formType="Create"
       handleSubmit={(event) => handleSubmit(event)}
     />

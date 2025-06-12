@@ -175,7 +175,7 @@ const EmployeeList = () => {
                     rowLabel={[
                       { label: 'Name', value: `${row.firstName} ${row.lastName}`},
                       { label: 'Employee ID', value: row.employeeId},
-                      { label: 'Store ID', value: row.store.storeId},
+                      { label: 'Store ID', value: row.store?.storeId || '-'},
                       { label: 'Role', value: row.role},
                       { label: 'Designation', value: row.employeeType},
                       { key: '', value: ''},

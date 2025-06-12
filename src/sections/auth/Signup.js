@@ -21,12 +21,16 @@ const Signup = () => {
     setStep(step + 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (step === 1) {
       handleNext(e);
     } else {
-      dispatch(signup({ firstName, lastName, email, password, storeName }))
+      const result = await dispatch(signup({ firstName, lastName, email, password, storeName }));
+      if (result.meta && result.meta.requestStatus === 'fulfilled') {
+        // After signup, create the initial store for the user
+        await dispatch(createStore({ name: storeName, subdomain: storeName.toLowerCase().replace(/\s+/g, '-'), type: 'retail' }));
+      }
     }
   };
 

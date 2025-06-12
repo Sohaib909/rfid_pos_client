@@ -3,14 +3,20 @@ import { getStoreConfig } from '../utils/subdomain';
 import axiosInstance from '../utils/axiosInstance';
 
 // Thunk to create a new product
-export const createProduct = createAsyncThunk('product/createProduct', async (productData) => {
-  const config = getStoreConfig();
+export const createProduct = createAsyncThunk('product/createProduct', async (productData, { getState }) => {
+  const { currentStore } = getState().store;
+  console.log('Current store in Redux (product):', currentStore);
+  const config = getStoreConfig(currentStore?._id);
+  console.log('Config for createProduct:', config);
   const response = await axiosInstance.post('/product', productData, config);
   return response.data;
 });
 
-export const fetchProducts = createAsyncThunk('product/fetchProducts', async () => {
-  const config = getStoreConfig();
+export const fetchProducts = createAsyncThunk('product/fetchProducts', async (_, { getState }) => {
+  const { currentStore } = getState().store;
+  console.log('Current store in Redux (fetchProducts):', currentStore);
+  const config = getStoreConfig(currentStore?._id);
+  console.log('Config for fetchProducts:', config);
   const response = await axiosInstance.get('/product', config);
   return response.data;
 });
