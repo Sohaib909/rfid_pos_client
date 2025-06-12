@@ -31,11 +31,15 @@ export const login = createAsyncThunk(
   }
 );
 
-export const logout = createAsyncThunk('auth/logout', async () => {
-  const response = await axiosInstance.post('/auth/logout');
-  // const user = response.data;
-  // dispatch(setStores(user.stores));  // Dispatch the setStores action
-  return {};
+export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.post('/auth/logout');
+    return response.data;
+  } catch (error) {
+    // Even if the server request fails, we should still clear local storage
+    console.warn('Logout request failed, but clearing local session:', error);
+    return {};
+  }
 });
 
 const authSlice = createSlice({
@@ -90,6 +94,18 @@ const authSlice = createSlice({
         state.status = 'succeeded';
         state.user = null;
         localStorage.removeItem('user');
+        localStorage.removeItem('stores');
+        // Redirect to login page
+        window.location.href = '/login';
+      })
+      .addCase(logout.rejected, (state, action) => {
+        // Even if logout fails on server, clear local session
+        state.status = 'succeeded';
+        state.user = null;
+        localStorage.removeItem('user');
+        localStorage.removeItem('stores');
+        // Redirect to login page
+        window.location.href = '/login';
       });
   },
 });
